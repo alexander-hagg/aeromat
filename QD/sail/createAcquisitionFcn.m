@@ -1,4 +1,4 @@
-function acqFunction = createAcquisitionFcn(fitnessFunction,model,d)
+function acqFunction = createAcquisitionFcn(fitnessFunction,model,varCoef)
 %CREATEACQUISITIONFCN Packages GP models into easily used acquisition function
 %
 % Syntax:  acqFunction 
@@ -18,7 +18,7 @@ function acqFunction = createAcquisitionFcn(fitnessFunction,model,d)
 
 %------------- BEGIN CODE --------------
 
-acqFunction = @(x) fitnessFunction( x, feval('predictGP', model, x), d.varCoef);
+acqFunction = @(x) feval(fitnessFunction, x, feval('predictGP', model, x), varCoef);
 
 %[adjustedFitness, values, phenotypes]
 %------------- END OF CODE --------------

@@ -1,4 +1,4 @@
-function [predMap,modelPred] = sail(acqMap,fitnessFunction,p,d,varargin)
+function [predMap,modelPred] = sail(acqMap,p,d,varargin)
 %SAIL - Surrogate Assisted Illumination Algorithm
 % Main run script of SAIL algorithm
 %
@@ -6,8 +6,8 @@ function [predMap,modelPred] = sail(acqMap,fitnessFunction,p,d,varargin)
 % Bonn-Rhein-Sieg University of Applied Sciences (HBRS)
 % email: adam.gaier@h-brs.de, alexander.hagg@h-brs.de
 % Nov 2016; Last revision: 23-Aug-2019
+surrogate = []; if nargin > 4; surrogate = varargin{1}; end
 if p.display.illu
-    surrogate = []; if nargin > 4; surrogate = varargin{1}; end
     if nargin > 5; figHandleAcqMap = varargin{2};else;f=figure(4);clf(f);figHandleAcqMap = axes; end
     title(figHandleAcqMap,'Acquisition Fcn'); drawnow;
     if nargin > 6; figHandleMap = varargin{3};else;f=figure(1);clf(f);figHandleMap = axes; end
@@ -16,7 +16,7 @@ if p.display.illu
     
 end
 
-p.predMapResolution = p.featureResolution;
+p.predMapResolution = d.featureRes;
 p.featureResolution = p.infill.featureResolution;
 
 if isempty(surrogate)
@@ -49,7 +49,7 @@ while nSamples <= p.infill.nTotalSamples
     %    p.infill.model.functionEvals = 100;
     %end
     model = trainGP(observation,trueFitness,p.infill.modelParams);
-    acqFunction = createAcquisitionFcn(fitnessFunction,model,d);
+    acqFunction = createAcquisitionFcn('mirror_AcquisitionFunc',model,d.varCoef);
     
     % After final model is created no more infill is necessary
     if nSamples >= p.infill.nTotalSamples; break; end
@@ -63,21 +63,20 @@ while nSamples <= p.infill.nTotalSamples
     
     % Evaluate data set with acquisition function
     try
-        [fitness,values,phenotypes] = acqFunction(parents);
+        [fitness,values] = acqFunction(parents);
     catch exception
         disp(exception.identifier);
     end
     
     % Place Best Samples in Map with Acquisition Fitness
-    acqMap = createMap(d,p);
-    [replaced, replacement, features] = nicheCompete(parents, fitness, phenotypes, acqMap, d, p);
-    acqMap = updateMap(replaced,replacement,acqMap,fitness,parents,...
-                        values,features, p.extraMapValues);
-    
+    acqMap                                              = createMap(d, p);
+    [replaced, replacement, percImprovement, features]  = nicheCompete(parents, fitness, acqMap, d, p);
+    acqMap                                              = updateMap(replaced,replacement,acqMap,fitness,parents, features);                    
+
     % Illuminate with QD (but no visualization)
     acqCfg = p;acqCfg.display.illu = false;
     acqMap = illuminate(acqMap,acqFunction,acqCfg,d);
-
+    
     %% 3 - Select Infill Samples
     % The next samples to be tested are chosen from the acquisition map: a
     % sobol sequence is used to to evenly sample the map in the feature
@@ -129,7 +128,7 @@ while nSamples <= p.infill.nTotalSamples
         
         % Precise evaluation
         if ~isempty(nextGenes)
-            measuredValue = fitnessFunction(nextGenes,d.fitfun,0);
+            measuredValue = feval(d.preciseEvaluate,nextGenes,d);
             % Assign found values
             newValue(nanIndx,:) = measuredValue;
         end
@@ -174,7 +173,12 @@ disp(['PE ' int2str(nSamples) ' | Training Prediction Models']);
 p.infill.modelParams.functionEvals = 100;
 modelPred = trainGP(observation,trueFitness,p.infill.modelParams);
 p.featureResolution = p.predMapResolution;
-[predMap] = createPredictionMap(modelPred,fitnessFunction,p,d,figHandleMap,figHandleTotalFit,figHandleMeanDrift);
+pcfg = p; pcfg.display.illu = false;
+[predMap] = createPredictionMap(modelPred,'mirror_AcquisitionFunc',pcfg,d);
+
+if p.display.illu
+    viewMap(predMap,d)
+end
 
 end
 

@@ -28,8 +28,8 @@ function [bestIndex, bestBin] = getBestPerCell(fitness, d, edges, features)
 %------------- BEGIN CODE --------------
 
 % Get Features of all samples
-for iDim = 1:length(d.selectedFeatures)
-    bin(:,iDim) = discretize(features(:,d.selectedFeatures(iDim)),edges{iDim});
+for iDim = 1:length(d.featureSelection)
+    bin(:,iDim) = discretize(features(:,d.featureSelection(iDim)),edges{iDim});
 end
 [sortedByFeatureAndFitness, indxSortOne] = sortrows([bin fitness]);
 [~, indxSortTwo] = unique(sortedByFeatureAndFitness(:,[1 2]),'rows');

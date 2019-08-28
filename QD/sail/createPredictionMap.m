@@ -38,19 +38,17 @@ if nargin > 6; figHandleMeanDrift = varargin{3};end
 
 d.varCoef = 0; % no award for uncertainty
 % Construct functions
-acqFunction = createAcquisitionFcn(fitnessFunction,gpModel,d);
+acqFunction = createAcquisitionFcn(fitnessFunction,gpModel,0);
 
 % Seed map with precisely evaluated solutions
 observation = gpModel.trainInput;
 
-[fitness,values,phenotypes] = acqFunction(observation);
+[fitness,values] = acqFunction(observation);
 
-predMap = createMap(d,p);
-[replaced, replacement, features] = nicheCompete(observation, fitness, phenotypes, predMap, d, p);
-predMap = updateMap(replaced,replacement,predMap,fitness,observation,...
-                        values,features, p.extraMapValues);
+predMap                                              = createMap(d, p);
+[replaced, replacement, percImprovement, features]  = nicheCompete(observation, fitness, predMap, d, p);
+predMap                                              = updateMap(replaced,replacement,predMap,fitness,observation, features);                    
 
 % Illuminate based on surrogate models
-predMap = illuminate(predMap,acqFunction,p,d,figHandleMap,figHandleTotalFit,figHandleMeanDrift);
-    
+predMap = illuminate(predMap,acqFunction,p,d);
 %------------- END OF CODE --------------

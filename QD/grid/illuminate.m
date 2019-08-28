@@ -56,18 +56,17 @@ while (iGen <= p.nGens)
     else
         percValid(iGen) = 1;
     end
-    [fitness, values, phenotypes] = fitnessFunction(children);
+    [fitness, values] = fitnessFunction(children);
     
-    %% Add Children to Map
-    [replaced, replacement, features] = nicheCompete(children,fitness,values{end},map,d,p);
+    %% Add Children to Map    
+    [replaced, replacement, percImprovement, features]  = nicheCompete(children, fitness, map, d, p);
     percImproved(iGen) = length(replaced)/p.nChildren;
-    map = updateMap(replaced,replacement,map,fitness,children,values,features,p.extraMapValues);
+    map = updateMap(replaced,replacement,map,fitness,children, features);     
     
     allMaps{iGen} = map;
     percFilled(iGen) = sum(~isnan(map.fitness(:)))/(size(map.fitness,1)*size(map.fitness,2));
     fitnessMean(iGen) = nanmean(map.fitness(:));
     fitnessTotal(iGen) = nansum(map.fitness(:));
-    driftMean(iGen) = nanmean(map.drift);
     
     %% View New Map
     if p.display.illu && (~mod(iGen,p.display.illuMod) || (iGen==p.nGens))
@@ -88,21 +87,6 @@ cla(figHandle);
 viewMap(map,d,figHandle);
 title(figHandle,['Fitness Gen ' int2str(iGen) '/' int2str(nGens)]);
 caxis(figHandle,[0 1]);
-
-cla(figHandleTotalFit);
-plot(figHandleTotalFit,fitnessTotal./numElements,'LineWidth',2);
-axis(figHandleTotalFit,[0 iGen 0 1]);
-grid(figHandleTotalFit,'on');
-title(figHandleTotalFit,['Total Fitness (QD Fitness)']);
-
-if sum(driftMean(:)) > 0
-    cla(figHandleMeanDrift);
-    plot(figHandleMeanDrift,driftMean,'LineWidth',2);
-    axis(figHandleMeanDrift,[0 iGen 0 1]);
-    grid(figHandleMeanDrift,'on');
-    title(figHandleMeanDrift,['User Selection Drift']);
-end
-
 drawnow;
 end
 

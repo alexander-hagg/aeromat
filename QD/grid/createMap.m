@@ -40,7 +40,7 @@ map.features  = blankMap;
 map.genes       = repmat(blankMap,[1 1 d.dof]); %#ok<REPMAT>
 
 % Phenotypic Features
-map.features = repmat(blankMap,[1 1 length(d.featureLabels)]); %#ok<REPMAT>
+map.features = repmat(blankMap,[1 1 length(d.featureSelection)]); %#ok<REPMAT>
 
 if ~isempty(varargin)
     for iValues = 1:length(varargin{1})

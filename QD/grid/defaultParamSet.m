@@ -16,7 +16,7 @@ function p = defaultParamSet(varargin)
 %------------- BEGIN CODE --------------
 
 p.numInitSamples            = 2^6;      % number of initial samples
-p.nGens                     = 2^8;       % number of generations
+p.nGens                     = 2^5;       % number of generations
 p.nChildren                 = 2^5;      % number of children per generation
 p.mutSigma                  = 0.1;      % mutation drawn from Gaussian distribution with this \sigma
 p.featureResolution         = [20,20];  % Resolution of the map (in cells per dimension). Keep it square
@@ -28,9 +28,9 @@ p.penaltyWeight             = 2;        % User selection drift, weight for soft 
 p.driftThreshold            = 0.5;      % User selection drift, threshold for hard user constraint
 
 % Visualization and management of saved data 
-p.display.illu              = true;
-p.display.illuMod           = 100;
-p.numMaps2Save              = 100;
+p.display.illu              = false;
+p.display.illuMod           = 10;
+p.numMaps2Save              = 10;
 
 end
 
