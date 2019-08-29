@@ -8,7 +8,7 @@ destFolderName="/scratch/$USER/sailCFD/"
 
 # 32 (real) Cores (1 job per node)
 repositoryFolderName=/home/$USER/aeromat
-templateFolderName=$repositoryFolderName/domains/mirror/pe/ofTemplates/hpc1_mirror_only
+templateFolderName=$repositoryFolderName/domains/mirror/pe/ofTemplates/RANS_INC
 for (( i=1; i<=$nCases; i++ ))
 do
 	caseName=$destFolderName"case$i"
