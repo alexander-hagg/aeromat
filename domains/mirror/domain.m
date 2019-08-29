@@ -20,23 +20,29 @@ function d = domain(varargin)
 % Bonn-Rhein-Sieg University of Applied Sciences (BRSU)
 % email: alexander.hagg@h-brs.de
 % Dec 2017; Last revision: 11-Dec-2017
+%
 %------------- Input Parsing ------------
 parse = inputParser;
 parse.addOptional('nCases'  , 1);
 parse.addOptional('hpc', false);
-parse.addOptional('lowres', false);
-parse.addOptional('mirrorOnly', true);
+parse.addOptional('homeDir','.');
+parse.addOptional('userName','ahagg2s');
+parse.addOptional('foamTemplate','/home/ahagg2s/aeromat/domains/mirror/pe/ofTemplates/hpc1_mirror_only');
 
 parse.parse(varargin{:});
 d.nCases      = parse.Results.nCases;
 d.hpc         = parse.Results.hpc;
-d.lowres      = parse.Results.lowres;
-d.mirrorOnly  = parse.Results.mirrorOnly;
+d.homeDir     = parse.Results.homeDir;
+d.userName    = parse.Results.userName;
+d.foamTemplate= parse.Results.foamTemplate;
 
 d.runFolder = pwd;
 
 %%------------- BEGIN CODE --------------
 disp(['Mirror domain']);
+% Ensure Randomness of Randomness
+RandStream.setGlobalStream(RandStream('mt19937ar','Seed','shuffle'));
+
 d.name = 'mirror_ffd';
 
 % - Scripts
@@ -105,7 +111,7 @@ d.minDragForce = 0.001;         % Only use this to prevent really bad shapes to 
 if d.hpc
     %% Cluster
     % % Cases are executed and stored here (cases are started elsewhere)
-    d.openFoamFolder = ['/scratch/ahagg2s/sailCFD/'];
+    d.openFoamFolder = ['/scratch/' d.userName '/sailCFD/'];
     d.openFoamTemplate = [d.runFolder '/domains/mirror/pe/ofTemplates/hpc1_mirror_only'];  
     % - There should be a folder called 'case1, case2, ..., caseN in this
     % folder, where N is the number of new samples added every iteration.
@@ -115,8 +121,8 @@ if d.hpc
     
 else
     %% Local
-    % TODO: make script that creates folders and runs caserunners
-    d.openFoamFolder = ['/scratch/ahagg2s/sailCFD/'];
+    % TODO: make script that creates folders and runs caserunners locally
+    d.openFoamFolder = ['/scratch/' d.userName '/sailCFD/'];
     d.openFoamTemplate = [d.runFolder '/domains/mirror/pe/ofTemplates/local_mirror_only'];
 end
 

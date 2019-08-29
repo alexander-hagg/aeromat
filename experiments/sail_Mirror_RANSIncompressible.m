@@ -1,23 +1,28 @@
-% demo - demo run SAIL
+% sail_Mirror_RANSIncompressible
 %
 % Author: Adam Gaier, Alexander Hagg
 % Bonn-Rhein-Sieg University of Applied Sciences (HBRS)
 % email: adam.gaier@h-brs.de, alexander.hagg@h-brs.de
-% Aug 2019; Last revision: 27-Aug-2019
+% Aug 2019; Last revision: 29-Aug-2019
 
 %------------- BEGIN CODE --------------
 clear;clc;
+nCases = str2num(getenv('NCASES'));if isempty(nCases); nCases=1; end
+homeDir = getenv('HOME');
+userName = getenv('USER');
+foamTemplate = getenv('baseFolderName');
+runOncluster = true;
 
 % ----------------------------------------------------------------------------------
 disp(['>>> Configuration']);
 DOMAIN              = 'mirror'; addpath(genpath('.'));rmpath(genpath('domains')); addpath(genpath(['domains/' DOMAIN]));
-d                   = domain;
+d                   = domain(nCases,runOncluster,homeDir,userName,foamTemplate);
 p                   = defaultParamSet(4);
 p.infill            = infillParamSet;
 surrogateAssistance = true;
 
 % uncomment this for real evaluation
-d.preciseEvaluate = 'mirror_DummyPreciseEvaluate';
+% d.preciseEvaluate = 'mirror_DummyPreciseEvaluate';
 
 % ----------------------------------------------------------------------------------
 disp(['>>> Initialization']);
@@ -38,7 +43,5 @@ map                                                 = updateMap(replaced,replace
 disp(['>>> Illumination']);
 [map,surrogate] = sail(map,p,d);
 %viewMap(map,d);
-
-save(['sail' DOMAIN '.mat'],'map','surrogate','p','d','initSamples','fitness');
 
 %------------- END CODE --------------
