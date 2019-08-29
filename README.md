@@ -1,5 +1,7 @@
 # aeromat
 
+In order to launch SAIL with the mirror domain on the cluster, please use the launch_hpcMirror.sh bash script
+
 ## Structure of this repository
 
 
@@ -33,7 +35,11 @@ sail_Mirror_RANSIncompressible.m
 sb_hpcMirror.sh
 sb_hpcMirrorFoamTest.sh
 
+
+
 ## Scans of velomobile
+
+
 ./domains/velomobile:
 body.stl
 hood.stl
