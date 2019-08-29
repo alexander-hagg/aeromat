@@ -4,7 +4,8 @@ module load matlab/default
 
 # Create base OpenFOAM cases and launch case runners
 nCases=0
-destFolderName="/scratch/$USER/sailCFD/"
+destFolderName="/tmp/$USER/sailCFD/"
+mkdir destFolderName
 
 # 32 (real) Cores (1 job per node)
 repositoryFolderName=/home/$USER/aeromat

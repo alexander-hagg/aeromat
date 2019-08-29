@@ -12,12 +12,13 @@ homeDir = getenv('HOME');
 userName = getenv('USER');
 repositoryLocation = getenv('repositoryFolderName');
 foamTemplateLocation = getenv('templateFolderName');
+jobLocation = getenv('destFolderName');
 runOncluster = true;
 
 % ----------------------------------------------------------------------------------
 disp(['>>> Configuration']);
 DOMAIN              = 'mirror'; addpath(genpath(repositoryLocation));rmpath(genpath('domains')); addpath(genpath(['domains/' DOMAIN]));
-d                   = domain('nCases',nCases,'hpc',runOncluster,'homeDir',homeDir,'userName',userName,'foamTemplate',foamTemplateLocation,'repository',repositoryLocation);
+d                   = domain('nCases',nCases,'hpc',runOncluster,'homeDir',homeDir,'userName',userName,'foamTemplate',foamTemplateLocation,'repository',repositoryLocation, 'jobLocation', jobLocation);
 p                   = defaultParamSet
 p.infill            = infillParamSet;
 surrogateAssistance = true;

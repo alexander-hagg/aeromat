@@ -29,6 +29,7 @@ parse.addOptional('homeDir','/home/alex');
 parse.addOptional('userName','alex');
 parse.addOptional('foamTemplate','/home/alex/aeromat/domains/mirror/pe/ofTemplates/RANS_INC');
 parse.addOptional('repository','/home/alex/aeromat');
+parse.addOptional('jobLocation','/scratch/ahagg2s/sailCFD');
 
 parse.parse(varargin{:});
 d.nCases      = parse.Results.nCases;
@@ -37,6 +38,7 @@ d.homeDir     = parse.Results.homeDir;
 d.userName    = parse.Results.userName;
 d.foamTemplate= parse.Results.foamTemplate;
 d.repo        = parse.Results.repository;
+d.jobLocation = parse.Results.jobLocation;
 
 
 %%------------- BEGIN CODE --------------
@@ -112,7 +114,7 @@ d.minDragForce = 0.001;         % Only use this to prevent really bad shapes to 
 if d.hpc
     %% Cluster
     % % Cases are executed and stored here (cases are started elsewhere)
-    d.openFoamFolder = ['/scratch/' d.userName '/sailCFD/'];
+    d.openFoamFolder = jobLocation;
     d.openFoamTemplate = [d.repo '/domains/mirror/pe/ofTemplates/RANS_INC'];  
     % - There should be a folder called 'case1, case2, ..., caseN in this
     % folder, where N is the number of new samples added every iteration.
@@ -124,7 +126,7 @@ else
     %% Local
     % TODO: make script that creates folders and runs caserunners locally
     disp('Local run not available');
-    d.openFoamFolder = ['/scratch/' d.userName '/sailCFD/'];
+    d.openFoamFolder = jobLocation;
     d.openFoamTemplate = foamTemplate;
 end
 
