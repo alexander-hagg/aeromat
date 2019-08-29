@@ -7,7 +7,8 @@ nCases=10
 destFolderName="/scratch/$USER/sailCFD/"
 
 # 32 (real) Cores (1 job per node)
-baseFolderName=/home/$USER/aeromat/domains/mirror/pe/ofTemplates/hpc1_mirror_only
+repositoryFolderName=/home/$USER/aeromat
+templateFolderName=$baseFolderName/domains/mirror/pe/ofTemplates/hpc1_mirror_only
 for (( i=1; i<=$nCases; i++ ))
 do
 	caseName=$destFolderName"case$i"
@@ -20,6 +21,5 @@ done
 # Launch SAIL
 cases=$(($nCases))
 echo 'SAIL Main Script'
-export nCases=nCases
-export baseFolderName=baseFolderName
+export NCASES=NCASES
 sbatch sb_hpcMirror.sh

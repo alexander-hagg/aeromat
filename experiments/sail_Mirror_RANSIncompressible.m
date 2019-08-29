@@ -10,13 +10,14 @@ clear;clc;
 nCases = str2num(getenv('NCASES'));if isempty(nCases); nCases=1; end
 homeDir = getenv('HOME');
 userName = getenv('USER');
-foamTemplate = getenv('baseFolderName');
+repositoryLocation = getenv('repositoryFolderName');
+foamTemplateLocation = getenv('templateFolderName');
 runOncluster = true;
 
 % ----------------------------------------------------------------------------------
 disp(['>>> Configuration']);
-DOMAIN              = 'mirror'; addpath(genpath('.'));rmpath(genpath('domains')); addpath(genpath(['domains/' DOMAIN]));
-d                   = domain('nCases',nCases,'hpc',runOncluster,'homeDir',homeDir,'userName',userName,'foamTemplate',foamTemplate);
+DOMAIN              = 'mirror'; addpath(genpath(repositoryLocation));rmpath(genpath('domains')); addpath(genpath(['domains/' DOMAIN]));
+d                   = domain('nCases',nCases,'hpc',runOncluster,'homeDir',homeDir,'userName',userName,'foamTemplate',foamTemplateLocation);
 p                   = defaultParamSet(4);
 p.infill            = infillParamSet;
 surrogateAssistance = true;

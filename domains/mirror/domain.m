@@ -28,6 +28,7 @@ parse.addOptional('hpc', false);
 parse.addOptional('homeDir','/home/alex');
 parse.addOptional('userName','alex');
 parse.addOptional('foamTemplate','/home/alex/aeromat/domains/mirror/pe/ofTemplates/hpc1_mirror_only');
+parse.addOptional('repository','/home/alex/aeromat');
 
 parse.parse(varargin{:});
 d.nCases      = parse.Results.nCases;
@@ -35,8 +36,8 @@ d.hpc         = parse.Results.hpc;
 d.homeDir     = parse.Results.homeDir;
 d.userName    = parse.Results.userName;
 d.foamTemplate= parse.Results.foamTemplate;
+d.repo        = parse.Results.repository;
 
-d.runFolder = pwd;
 
 %%------------- BEGIN CODE --------------
 disp(['Mirror domain']);
@@ -112,7 +113,7 @@ if d.hpc
     %% Cluster
     % % Cases are executed and stored here (cases are started elsewhere)
     d.openFoamFolder = ['/scratch/' d.userName '/sailCFD/'];
-    d.openFoamTemplate = [d.runFolder '/domains/mirror/pe/ofTemplates/hpc1_mirror_only'];  
+    d.openFoamTemplate = [d.repo '/domains/mirror/pe/ofTemplates/hpc1_mirror_only'];  
     % - There should be a folder called 'case1, case2, ..., caseN in this
     % folder, where N is the number of new samples added every iteration.
     % - Each folder has a shell script called 'caserunner.sh' which must be
@@ -123,12 +124,12 @@ else
     %% Local
     % TODO: make script that creates folders and runs caserunners locally
     d.openFoamFolder = ['/scratch/' d.userName '/sailCFD/'];
-    d.openFoamTemplate = [d.runFolder '/domains/mirror/pe/ofTemplates/local_mirror_only'];
+    d.openFoamTemplate = [d.repo '/domains/mirror/pe/ofTemplates/local_mirror_only'];
 end
 
 
 %% Cases are executed and stored here
-d.caseRunner = [d.runFolder '/domains/mirror/pe/startCaseRunners.sh'];
+d.caseRunner = [d.repo '/domains/mirror/pe/startCaseRunners.sh'];
 system(['cp ' d.caseRunner ' ' d.openFoamFolder]);
 for iCase = 1:d.nCases
     system(['rm -rf ' d.openFoamFolder 'case' int2str(iCase)]);
