@@ -4,12 +4,13 @@ module load matlab/default
 
 # Create base OpenFOAM cases and launch case runners
 nCases=1
-destFolderName="/tmp/$USER/sailCFD/"
-mkdir destFolderName
+mkdir /tmp/$USER
+export destFolderName="/tmp/$USER/sailCFD/"
+mkdir $destFolderName
 
 # 32 (real) Cores (1 job per node)
-repositoryFolderName=/home/$USER/aeromat
-templateFolderName=$repositoryFolderName/domains/mirror/pe/ofTemplates/RANS_INC
+export repositoryFolderName="/home/$USER/aeromat"
+export templateFolderName="$repositoryFolderName/domains/mirror/pe/ofTemplates/RANS_INC"
 for (( i=1; i<=$nCases; i++ ))
 do
 	caseName=$destFolderName"case$i"

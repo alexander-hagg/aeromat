@@ -114,7 +114,7 @@ d.minDragForce = 0.001;         % Only use this to prevent really bad shapes to 
 if d.hpc
     %% Cluster
     % % Cases are executed and stored here (cases are started elsewhere)
-    d.openFoamFolder = jobLocation;
+    d.openFoamFolder = d.jobLocation;
     d.openFoamTemplate = [d.repo '/domains/mirror/pe/ofTemplates/RANS_INC'];  
     % - There should be a folder called 'case1, case2, ..., caseN in this
     % folder, where N is the number of new samples added every iteration.
@@ -126,7 +126,7 @@ else
     %% Local
     % TODO: make script that creates folders and runs caserunners locally
     disp('Local run not available');
-    d.openFoamFolder = jobLocation;
+    d.openFoamFolder = d.jobLocation;
     d.openFoamTemplate = foamTemplate;
 end
 
