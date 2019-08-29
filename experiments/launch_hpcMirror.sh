@@ -3,7 +3,7 @@ of1812
 module load matlab/default
 
 # Create base OpenFOAM cases and launch case runners
-nCases=10
+nCases=1
 destFolderName="/scratch/$USER/sailCFD/"
 
 # 32 (real) Cores (1 job per node)
