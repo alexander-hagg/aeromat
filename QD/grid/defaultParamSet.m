@@ -1,9 +1,9 @@
-function p = defaultParamSet(varargin)
+function p = defaultParamSet()
 % defaultParamSet - loads default parameters for QD algorithm 
 % (here: MAP-Elites with grid archive)
 %
-% Syntax:  p = defaultParamSet(ncores)
-%               ncores - number of parallel workers (one child per worker for efficiency)
+% Syntax:  p = defaultParamSet()
+%               
 %
 % Outputs:
 %   p      - struct - QD configuration struct

@@ -14,11 +14,10 @@
 % Clean up workspace and add relevant files to path
 clear;clc;
 nCases = str2num(getenv('NCASES'));if isempty(nCases); nCases=1; end
-disp(nCases)
-homeDir = getenv('HOME')
-userName = getenv('USER')
-repositoryLocation = getenv('repositoryFolderName')
-foamTemplateLocation = getenv('templateFolderName')
+homeDir = getenv('HOME');
+userName = getenv('USER');
+repositoryLocation = getenv('repositoryFolderName');
+foamTemplateLocation = getenv('templateFolderName');
 runOncluster = true;
 
 %% Generate shape and run OpenFOAM
@@ -26,7 +25,7 @@ runOncluster = true;
 disp(['>>> Configuration']);
 DOMAIN              = 'mirror'; addpath(genpath(repositoryLocation));rmpath(genpath('domains')); addpath(genpath(['domains/' DOMAIN]));
 d                   = domain('nCases',nCases,'hpc',runOncluster,'homeDir',homeDir,'userName',userName,'foamTemplate',foamTemplateLocation,'repository',repositoryLocation);
-p                   = defaultParamSet(4);
+p                   = defaultParamSet;
 p.infill            = infillParamSet;
 
 % Use Dummy Evaluation 

@@ -17,8 +17,8 @@ runOncluster = true;
 % ----------------------------------------------------------------------------------
 disp(['>>> Configuration']);
 DOMAIN              = 'mirror'; addpath(genpath(repositoryLocation));rmpath(genpath('domains')); addpath(genpath(['domains/' DOMAIN]));
-d                   = domain('nCases',nCases,'hpc',runOncluster,'homeDir',homeDir,'userName',userName,'foamTemplate',foamTemplateLocation);
-p                   = defaultParamSet(4);
+d                   = domain('nCases',nCases,'hpc',runOncluster,'homeDir',homeDir,'userName',userName,'foamTemplate',foamTemplateLocation,'repository',repositoryLocation);
+p                   = defaultParamSet
 p.infill            = infillParamSet;
 surrogateAssistance = true;
 
