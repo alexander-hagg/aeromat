@@ -25,9 +25,9 @@ function d = domain(varargin)
 parse = inputParser;
 parse.addOptional('nCases'  , 1);
 parse.addOptional('hpc', false);
-parse.addOptional('homeDir','.');
-parse.addOptional('userName','ahagg2s');
-parse.addOptional('foamTemplate','/home/ahagg2s/aeromat/domains/mirror/pe/ofTemplates/hpc1_mirror_only');
+parse.addOptional('homeDir','/home/alex');
+parse.addOptional('userName','alex');
+parse.addOptional('foamTemplate','/home/alex/aeromat/domains/mirror/pe/ofTemplates/hpc1_mirror_only');
 
 parse.parse(varargin{:});
 d.nCases      = parse.Results.nCases;
@@ -128,7 +128,7 @@ end
 
 
 %% Cases are executed and stored here
-d.caseRunner = [d.runFolder '/ffdSail/domains/mirror/pe/startCaseRunners.sh'];
+d.caseRunner = [d.runFolder '/domains/mirror/pe/startCaseRunners.sh'];
 system(['cp ' d.caseRunner ' ' d.openFoamFolder]);
 for iCase = 1:d.nCases
     system(['rm -rf ' d.openFoamFolder 'case' int2str(iCase)]);
