@@ -6,8 +6,9 @@
 % Aug 2019; Last revision: 27-Aug-2019
 
 %------------- BEGIN CODE --------------
-%% Configuration
 clear;clc;
+
+% ----------------------------------------------------------------------------------
 disp(['>>> Configuration']);
 DOMAIN              = 'mirror'; addpath(genpath('.'));rmpath(genpath('domains')); addpath(genpath(['domains/' DOMAIN]));
 d                   = domain;
@@ -16,8 +17,9 @@ p.infill            = infillParamSet;
 surrogateAssistance = true;
 
 % uncomment this for real evaluation
-%d.preciseEvaluate = 'mirror_DummyPreciseEvaluate';
+d.preciseEvaluate = 'mirror_DummyPreciseEvaluate';
 
+% ----------------------------------------------------------------------------------
 disp(['>>> Initialization']);
 if exist(d.initialSampleSource,'file')
     [initSamples, values] = load(initFilename);
@@ -32,12 +34,9 @@ map                                                 = createMap(d, p);
 [replaced, replacement, percImprovement, features]  = nicheCompete(initSamples, fitness, map, d, p);
 map                                                 = updateMap(replaced,replacement,map,fitness,initSamples, features);
 
-%% Main loop
+% ----------------------------------------------------------------------------------
 disp(['>>> Illumination']);
-
 [map,surrogate] = sail(map,p,d);
-viewMap(map,d);
-
-%%
+%viewMap(map,d);
 
 %------------- END CODE --------------

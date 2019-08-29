@@ -57,9 +57,9 @@ d.varCoef  = 10; % variance weight
 
 
 % Base mesh for free form deformation
-[~, ~, d.FfdP] =  mirror_ffd_Express(base,'domains/mirrorDomain/ffd/mirrorBase.stl');
+[~, ~, d.FfdP] =  mirror_ffd_Express(base,'domains/mirror/ffd/mirrorBase.stl');
 d.express  = @(x) mirror_ffd_Express(x, d.FfdP);
-[~, ~, d.FfdP_CFD] =  mirror_ffd_Express(base,'domains/mirrorDomain/ffd/mirrorBase_CFD.stl');
+[~, ~, d.FfdP_CFD] =  mirror_ffd_Express(base,'domains/mirror/ffd/mirrorBase_CFD.stl');
 d.express_CFD  = @(x) mirror_ffd_Express(x, d.FfdP_CFD);
 d.base.fv   = d.express(base);
 d.base.mesh = d.base.fv.vertices;
@@ -106,7 +106,7 @@ if d.hpc
     %% Cluster
     % % Cases are executed and stored here (cases are started elsewhere)
     d.openFoamFolder = ['/scratch/ahagg2s/sailCFD/'];
-    d.openFoamTemplate = [d.runFolder '/domains/mirrorDomain/pe/ofTemplates/hpc1_mirror_only'];  
+    d.openFoamTemplate = [d.runFolder '/domains/mirror/pe/ofTemplates/hpc1_mirror_only'];  
     % - There should be a folder called 'case1, case2, ..., caseN in this
     % folder, where N is the number of new samples added every iteration.
     % - Each folder has a shell script called 'caserunner.sh' which must be
@@ -117,19 +117,19 @@ else
     %% Local
     % TODO: make script that creates folders and runs caserunners
     d.openFoamFolder = ['/scratch/ahagg2s/sailCFD/'];
-    d.openFoamTemplate = [d.runFolder '/domains/mirrorDomain/pe/ofTemplates/local_mirror_only'];
+    d.openFoamTemplate = [d.runFolder '/domains/mirror/pe/ofTemplates/local_mirror_only'];
 end
 
 
 %% Cases are executed and stored here
-% d.caseRunner = [d.runFolder '/ffdSail/domains/mirror/pe/startCaseRunners.sh'];
-% system(['cp ' d.caseRunner ' ' d.openFoamFolder]);
-% for iCase = 1:d.nCases
-%     system(['rm -rf ' d.openFoamFolder 'case' int2str(iCase)]);
-%     system(['mkdir ' d.openFoamFolder 'case' int2str(iCase)]);
-%     system(['cp -r ' d.openFoamTemplate '/* ' d.openFoamFolder 'case' int2str(iCase)]);
-%     system(['cp ' d.caseRunner ' ' d.openFoamFolder ]);
-% end
+d.caseRunner = [d.runFolder '/ffdSail/domains/mirror/pe/startCaseRunners.sh'];
+system(['cp ' d.caseRunner ' ' d.openFoamFolder]);
+for iCase = 1:d.nCases
+    system(['rm -rf ' d.openFoamFolder 'case' int2str(iCase)]);
+    system(['mkdir ' d.openFoamFolder 'case' int2str(iCase)]);
+    system(['cp -r ' d.openFoamTemplate '/* ' d.openFoamFolder 'case' int2str(iCase)]);
+    system(['cp ' d.caseRunner ' ' d.openFoamFolder ]);
+end
 
 % %------------- END OF CODE --------------
 
