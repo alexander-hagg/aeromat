@@ -12,14 +12,14 @@ clear;clc;
 disp(['>>> Configuration']);
 DOMAIN              = 'mirror'; addpath(genpath('.'));rmpath(genpath('domains')); addpath(genpath(['domains/' DOMAIN]));
 d                   = domain;
-p                   = defaultParamSet(4);
+p                   = defaultParamSet;
 p.infill            = infillParamSet;
 surrogateAssistance = true;
 
 % uncomment this for real evaluation
 d.preciseEvaluate = 'mirror_DummyPreciseEvaluate';
 
-% ----------------------------------------------------------------------------------
+%% ----------------------------------------------------------------------------------
 disp(['>>> Initialization']);
 if exist(d.initialSampleSource,'file')
     [initSamples, values] = load(initFilename);

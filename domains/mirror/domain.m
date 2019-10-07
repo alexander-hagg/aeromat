@@ -127,7 +127,7 @@ else
     % TODO: make script that creates folders and runs caserunners locally
     disp('Local run not available');
     d.openFoamFolder = d.jobLocation;
-    d.openFoamTemplate = foamTemplate;
+    d.openFoamTemplate = [d.repo '/domains/mirror/pe/ofTemplates/RANS_INC'];
 end
 
 
