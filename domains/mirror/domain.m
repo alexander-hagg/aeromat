@@ -40,6 +40,7 @@ d.foamTemplate= parse.Results.foamTemplate;
 d.repo        = parse.Results.repository;
 d.jobLocation = parse.Results.jobLocation;
 
+d.solver = 'RANS_INCOMPRESSIBLE'; % 'RANS_INCOMPRESSIBLE' 'LES_COMPRESSIBLE'
 
 %%------------- BEGIN CODE --------------
 disp(['Mirror domain']);
@@ -115,7 +116,7 @@ if d.hpc
     %% Cluster
     % % Cases are executed and stored here (cases are started elsewhere)
     d.openFoamFolder = d.jobLocation;
-    d.openFoamTemplate = [d.repo '/domains/mirror/pe/ofTemplates/RANS_INC'];  
+    d.openFoamTemplate = [d.repo '/domains/mirror/pe/ofTemplates/' d.solver];  
     % - There should be a folder called 'case1, case2, ..., caseN in this
     % folder, where N is the number of new samples added every iteration.
     % - Each folder has a shell script called 'caserunner.sh' which must be
@@ -125,14 +126,17 @@ if d.hpc
 else
     %% Local
     % TODO: make script that creates folders and runs caserunners locally
-    disp('Local run not available');
+    disp('Local run not available!');
     d.openFoamFolder = d.jobLocation;
-    d.openFoamTemplate = [d.repo '/domains/mirror/pe/ofTemplates/RANS_INC'];
+    d.openFoamTemplate = [d.repo '/domains/mirror/pe/ofTemplates/' d.solver];  
 end
 
 
 %% Cases are executed and stored here
 d.caseRunner = [d.repo '/domains/mirror/pe/startCaseRunners.sh'];
+disp(['Creating folder ' d.openFoamFolder]);
+mkdir(d.openFoamFolder);
+disp(['Copying necessary files to ' d.openFoamFolder]);
 system(['cp ' d.caseRunner ' ' d.openFoamFolder]);
 for iCase = 1:d.nCases
     system(['rm -rf ' d.openFoamFolder 'case' int2str(iCase)]);
