@@ -11,7 +11,8 @@ module load openmpi/gnu
 module load mpitools/default
 module load gcc/default
 
-. ~/OpenFOAM/OpenFOAM-v1906/etc/bashrc
+# . ~/OpenFOAM/OpenFOAM-v1906/etc/bashrc
+of1812
 
 echo "Number of tasks: " echo $SLURM_NTASKS
 
