@@ -1,7 +1,7 @@
 clear;clc;
 % ----------------------------------------------------------------------------------
 disp(['>>> Configuration']);
-DOMAIN              = 'mirror'; addpath(genpath('.'));rmpath(genpath('domains')); addpath(genpath(['domains/' DOMAIN]));
+DOMAIN              = 'mirror'; addpath(genpath('/home/ahagg2s/aeromat'));rmpath(genpath('domains')); addpath(genpath(['domains/' DOMAIN]));
 d                   = domain;
 p                   = defaultParamSet;
 p.infill            = infillParamSet;
