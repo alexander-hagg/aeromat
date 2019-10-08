@@ -1,5 +1,5 @@
 #!/bin/bash
-of1812
+source /usr/local/stella/OpenFOAM1812/OpenFOAM-v1812/etc/bashrc WM_NCOMPPROCS=32
 module load matlab/default
 
 # Create base OpenFOAM cases and launch case runners
@@ -15,6 +15,7 @@ do
 	caseName=$destFolderName"case$i"
 	echo $caseName
 	cp -TR $templateFolderName $caseName
+	rm $caseName/*.signal
  	export PBS_WORKDIR="$caseName"
 	sbatch $caseName/submit.sh
 done 
@@ -23,4 +24,4 @@ done
 cases=$(($nCases))
 echo 'SAIL:MIRROR Main Script'
 export NCASES=NCASES
-# sbatch sb_hpcMirror.sh
+sbatch sb_hpcMirror.sh

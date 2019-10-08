@@ -12,7 +12,7 @@ module load mpitools/default
 module load gcc/default
 
 # . ~/OpenFOAM/OpenFOAM-v1906/etc/bashrc
-of1812
+source /usr/local/stella/OpenFOAM1812/OpenFOAM-v1812/etc/bashrc WM_NCOMPPROCS=32
 
 echo "Number of tasks: " echo $SLURM_NTASKS
 
