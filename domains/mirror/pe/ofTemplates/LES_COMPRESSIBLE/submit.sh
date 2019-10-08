@@ -10,4 +10,5 @@
 #SBATCH --exclusive
 
 # Run experiment
+cd $caseName
 bash caseRunner.sh
