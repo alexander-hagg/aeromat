@@ -2,7 +2,7 @@ clear;clc;
 % ----------------------------------------------------------------------------------
 disp(['>>> Configuration']);
 DOMAIN              = 'mirror'; addpath(genpath(['/home/' getenv('USER') '/aeromat']));rmpath(genpath('domains')); addpath(genpath(['domains/' DOMAIN]));
-d                   = domain('nCases',4,'hpc',false,'username', getenv('USER'));
+d                   = domain('nCases',4,'hpc',true,'username', getenv('USER'));
 
 p                   = defaultParamSet;
 p.infill            = infillParamSet;
