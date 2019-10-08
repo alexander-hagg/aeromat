@@ -133,17 +133,17 @@ end
 
 
 %% Cases are executed and stored here
-d.caseRunner = [d.repo '/domains/mirror/pe/startCaseRunners.sh'];
-disp(['Creating folder ' d.openFoamFolder]);
-mkdir(d.openFoamFolder);
-disp(['Copying necessary files to ' d.openFoamFolder]);
-system(['cp ' d.caseRunner ' ' d.openFoamFolder]);
-for iCase = 1:d.nCases
-    system(['rm -rf ' d.openFoamFolder 'case' int2str(iCase)]);
-    system(['mkdir ' d.openFoamFolder 'case' int2str(iCase)]);
-    system(['cp -r ' d.openFoamTemplate '/* ' d.openFoamFolder 'case' int2str(iCase)]);
-    system(['cp ' d.caseRunner ' ' d.openFoamFolder ]);
-end
+%d.caseRunner = [d.repo '/domains/mirror/pe/startCaseRunners.sh'];
+%disp(['Creating folder ' d.openFoamFolder]);
+%mkdir(d.openFoamFolder);
+%disp(['Copying necessary files to ' d.openFoamFolder]);
+%system(['cp ' d.caseRunner ' ' d.openFoamFolder]);
+%for iCase = 1:d.nCases
+%    system(['rm -rf ' d.openFoamFolder 'case' int2str(iCase)]);
+%    system(['mkdir ' d.openFoamFolder 'case' int2str(iCase)]);
+%    system(['cp -r ' d.openFoamTemplate '/* ' d.openFoamFolder 'case' int2str(iCase)]);
+%    system(['cp ' d.caseRunner ' ' d.openFoamFolder ]);
+%end
 
 % %------------- END OF CODE --------------
 
