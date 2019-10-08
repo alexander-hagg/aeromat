@@ -16,7 +16,7 @@ do
 	echo $caseName
 	cp -TR $templateFolderName $caseName
  	export PBS_WORKDIR="$caseName"
-	# sbatch $caseName/submit.sh
+	sbatch $caseName/submit.sh
 done 
 
 # Launch SAIL
