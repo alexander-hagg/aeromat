@@ -9,10 +9,5 @@
 #SBATCH --export=ALL
 #SBATCH --exclusive
 
-# Necessary to pseudo-revert to old memory allocation behaviour
-# export MALLOC_ARENA_MAX=4
-
 # Run experiment
-echo $PBS_WORKDIR
-cd $PBS_WORKDIR
-./Allclean && ./caseRunner.sh
+bash caseRunner.sh
