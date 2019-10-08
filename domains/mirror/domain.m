@@ -25,10 +25,10 @@ function d = domain(varargin)
 parse = inputParser;
 parse.addOptional('nCases'  , 1);
 parse.addOptional('hpc', false);
-parse.addOptional('homeDir','/home/alex');
-parse.addOptional('userName','alex');
-parse.addOptional('foamTemplate','/home/alex/aeromat/domains/mirror/pe/ofTemplates/RANS_INC');
-parse.addOptional('repository','/home/alex/aeromat');
+parse.addOptional('homeDir','/home/ahagg2s');
+parse.addOptional('userName','ahagg2s');
+parse.addOptional('foamTemplate','/home/ahagg2s/aeromat/domains/mirror/pe/ofTemplates/RANS_INC');
+parse.addOptional('repository','/home/ahagg2s/aeromat');
 parse.addOptional('jobLocation','/scratch/ahagg2s/sailCFD');
 
 parse.parse(varargin{:});

@@ -2,7 +2,16 @@ clear;clc;
 % ----------------------------------------------------------------------------------
 disp(['>>> Configuration']);
 DOMAIN              = 'mirror'; addpath(genpath('/home/ahagg2s/aeromat'));rmpath(genpath('domains')); addpath(genpath(['domains/' DOMAIN]));
-d                   = domain;
+d                   = domain('nCases',4,'homeDir',getenv('HOME'));
+
+%'nCases'  , 1
+%'hpc', false
+%'homeDir','/home/ahagg2s'
+%'userName','ahagg2s'
+%'foamTemplate','/home/ahagg2s/aeromat/domains/mirror/pe/ofTemplates/RANS_INC'
+%'repository','/home/ahagg2s/aeromat'
+%'jobLocation','/scratch/ahagg2s/sailCFD'
+
 p                   = defaultParamSet;
 p.infill            = infillParamSet;
 
