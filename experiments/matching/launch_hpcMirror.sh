@@ -4,8 +4,7 @@ module load matlab/default
 
 # Create base OpenFOAM cases and launch case runners
 nCases=4
-mkdir /tmp/$USER
-export destFolderName="/tmp/$USER/sailCFD/"
+export destFolderName=/scratch/$USER/sailCFD/
 mkdir $destFolderName
 
 # 32 (real) Cores (1 job per node)
@@ -17,11 +16,11 @@ do
 	echo $caseName
 	cp -TR $templateFolderName $caseName
  	export PBS_WORKDIR="$caseName"
-	sbatch $caseName/submit.sh
+	# sbatch $caseName/submit.sh
 done 
 
 # Launch SAIL
 cases=$(($nCases))
 echo 'SAIL:MIRROR Main Script'
 export NCASES=NCASES
-sbatch sb_hpcMirror.sh
+# sbatch sb_hpcMirror.sh
