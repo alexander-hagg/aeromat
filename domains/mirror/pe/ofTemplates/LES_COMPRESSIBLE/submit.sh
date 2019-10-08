@@ -15,4 +15,4 @@
 # Run experiment
 echo $PBS_WORKDIR
 cd $PBS_WORKDIR
-./Allclean && ./caseRunner.sh
+./caseRunner.sh

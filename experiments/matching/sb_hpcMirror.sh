@@ -12,5 +12,5 @@
 module load matlab/default
 
 # Run experiment
-cd /home/ahagg2s/aeromat/experiments
+cd /home/ahagg2s/aeromat/experiments/matching
 matlab -nodisplay -nosplash -nodesktop -r "experiment_checkRANS"
