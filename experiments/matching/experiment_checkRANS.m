@@ -2,7 +2,7 @@ clear;clc;
 % ----------------------------------------------------------------------------------
 disp(['>>> Configuration']);
 DOMAIN              = 'mirror'; addpath(genpath('/home/ahagg2s/aeromat'));rmpath(genpath('domains')); addpath(genpath(['domains/' DOMAIN]));
-d                   = domain('nCases',4,'homeDir',getenv('HOME'));
+d                   = domain('nCases',4);
 
 %'nCases'  , 1
 %'hpc', false

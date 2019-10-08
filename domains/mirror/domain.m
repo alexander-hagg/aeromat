@@ -24,12 +24,12 @@ function d = domain(varargin)
 %------------- Input Parsing ------------
 parse = inputParser;
 parse.addOptional('nCases'  , 1);
-parse.addOptional('hpc', false);
+parse.addOptional('hpc', true);
 parse.addOptional('homeDir','/home/ahagg2s');
 parse.addOptional('userName','ahagg2s');
 parse.addOptional('foamTemplate','/home/ahagg2s/aeromat/domains/mirror/pe/ofTemplates/RANS_INC');
 parse.addOptional('repository','/home/ahagg2s/aeromat');
-parse.addOptional('jobLocation','/scratch/ahagg2s/sailCFD');
+parse.addOptional('jobLocation','/scratch/ahagg2s/sailCFD/');
 
 parse.parse(varargin{:});
 d.nCases      = parse.Results.nCases;
@@ -115,7 +115,7 @@ d.minDragForce = 0.001;         % Only use this to prevent really bad shapes to 
 if d.hpc
     %% Cluster
     % % Cases are executed and stored here (cases are started elsewhere)
-    d.openFoamFolder = d.jobLocation;
+    d.openFoamFolder = d.jobLocation
     d.openFoamTemplate = [d.repo '/domains/mirror/pe/ofTemplates/' d.solver];  
     % - There should be a folder called 'case1, case2, ..., caseN in this
     % folder, where N is the number of new samples added every iteration.
