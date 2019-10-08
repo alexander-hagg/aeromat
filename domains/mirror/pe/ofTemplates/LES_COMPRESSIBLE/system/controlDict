@@ -1,0 +1,155 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1806                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     rhoPimpleFoam;
+
+startFrom       startTime;
+
+startTime       0.0;
+
+stopAt          endTime;
+
+endTime         0.01;
+
+deltaT          8e-07; //8e-07
+
+writeControl    runTime; 
+
+writeInterval   8e-05;  // 12.5 kHz
+
+purgeWrite      0;
+
+writeFormat     binary;
+
+writePrecision  6;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable true;
+
+adjustTimeStep  no;
+
+maxCo           .5; 
+
+functions
+{
+
+    pressure
+    {
+        type            pressure;
+        libs            ("libfieldFunctionObjects.so");
+        writeControl    writeTime;
+        result          Cp;
+        calcTotal       no;
+        calcCoeff       yes;
+        rho             rhoInf;
+        rhoInf          1;
+        U               UInf;
+        UInf            (60.0 0 0);
+        pInf            0;
+    }
+
+forceCoeffs
+{
+    libs           ("libforces.so");
+    type            forceCoeffs;
+
+    outputControl   timeStep;
+    timeInterval    1;
+
+    log         yes;
+
+    patches     (carMirror);
+    pName       p;
+    UName       U;
+    rhoName     rhoInf;      
+    rhoInf      1;           
+    liftDir     (0 0 1);
+    dragDir     (1 0 0);
+    CofR        (0.003 0.102 0.69);   // Mirror midpoint on wall
+    pitchAxis   (0 0 0);
+    magUInf     60.0;        // Inlet wind speed magnitude
+    lRef        0.17;        // length of mirror 0.17
+    Aref        0.042;        // 0.3*0.14 
+/*
+    binData
+    {
+        nBin        20;          // output data into 20 bins
+        direction   (1 0 0);     // bin direction
+        cumulative  yes;
+    }
+*/
+}
+
+ vorticity1
+ {
+    type        vorticity;
+    libs        ("libfieldFunctionObjects.so");
+    writeControl    writeTime;
+ }
+
+yPlus1
+ {
+    type        yPlus;
+    libs        ("libfieldFunctionObjects.so");
+    writeControl    writeTime;
+ }
+
+     wallShearStress1
+ {
+    type        wallShearStress;
+    libs        ("libfieldFunctionObjects.so");
+    writeControl    writeTime;
+ }
+
+    Q1
+ {
+    type            Q;
+    libs            ("libfieldFunctionObjects.so");
+    writeControl    writeTime;
+ }
+
+    fieldAverage1
+    {
+        type            fieldAverage;
+        libs            ("libfieldFunctionObjects.so");
+        writeControl    writeTime;
+
+        fields
+        (
+	    U
+            {
+                mean        on;
+                prime2Mean  on;
+                base        time;
+            }
+
+            p
+            {
+                mean        on;
+                prime2Mean  on;
+                base        time;
+            }
+        );
+    }
+}
+
+// ************************************************************************* //

@@ -1,0 +1,48 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1806                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    object      nut;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 2 -1 0 0 0 0];
+
+internalField   uniform 0.066136223;
+
+
+// if l = 0.2 then
+//  nut = sqrt(1.5) * (U*I*l) = sqrt(1.5) * (27 * 0.01 * 0.2)= 0.066136223 
+
+
+boundaryField
+{
+      "(left|right|bottom|top|front).*"
+    {
+        type            fixedValue;
+        value		uniform 0.066136223;
+    }
+
+   back // WALL
+    {
+        type            nutkWallFunction;
+        value           uniform 0;
+    }
+
+
+    carGroup // WALL
+    {
+        type            nutkWallFunction;
+        value           uniform 0;
+    }
+
+}
+
