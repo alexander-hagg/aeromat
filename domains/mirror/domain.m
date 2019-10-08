@@ -25,20 +25,16 @@ function d = domain(varargin)
 parse = inputParser;
 parse.addOptional('nCases'  , 1);
 parse.addOptional('hpc', true);
-parse.addOptional('homeDir','/home/ahagg2s');
 parse.addOptional('userName','ahagg2s');
-parse.addOptional('foamTemplate','/home/ahagg2s/aeromat/domains/mirror/pe/ofTemplates/RANS_INC');
-parse.addOptional('repository','/home/ahagg2s/aeromat');
 parse.addOptional('jobLocation','/scratch/ahagg2s/sailCFD/');
 
 parse.parse(varargin{:});
 d.nCases      = parse.Results.nCases;
 d.hpc         = parse.Results.hpc;
-d.homeDir     = parse.Results.homeDir;
 d.userName    = parse.Results.userName;
-d.foamTemplate= parse.Results.foamTemplate;
-d.repo        = parse.Results.repository;
 d.jobLocation = parse.Results.jobLocation;
+
+d.repo = ['/home/' d.userName '/aeromat'];
 
 d.solver = 'RANS_INCOMPRESSIBLE'; % 'RANS_INCOMPRESSIBLE' 'LES_COMPRESSIBLE'
 
@@ -129,21 +125,23 @@ else
     disp('Local run not available!');
     d.openFoamFolder = d.jobLocation;
     d.openFoamTemplate = [d.repo '/domains/mirror/pe/ofTemplates/' d.solver];  
+    
+    %% Cases are executed and stored here
+    d.caseRunner = [d.repo '/domains/mirror/pe/startCaseRunners.sh'];
+    disp(['Creating folder ' d.openFoamFolder]);
+    mkdir(d.openFoamFolder);
+    disp(['Copying necessary files to ' d.openFoamFolder]);
+    system(['cp ' d.caseRunner ' ' d.openFoamFolder]);
+    for iCase = 1:d.nCases
+        system(['rm -rf ' d.openFoamFolder 'case' int2str(iCase)]);
+        system(['mkdir ' d.openFoamFolder 'case' int2str(iCase)]);
+        system(['cp -r ' d.openFoamTemplate '/* ' d.openFoamFolder 'case' int2str(iCase)]);
+        system(['cp ' d.caseRunner ' ' d.openFoamFolder ]);
+    end
 end
 
 
-%% Cases are executed and stored here
-%d.caseRunner = [d.repo '/domains/mirror/pe/startCaseRunners.sh'];
-%disp(['Creating folder ' d.openFoamFolder]);
-%mkdir(d.openFoamFolder);
-%disp(['Copying necessary files to ' d.openFoamFolder]);
-%system(['cp ' d.caseRunner ' ' d.openFoamFolder]);
-%for iCase = 1:d.nCases
-%    system(['rm -rf ' d.openFoamFolder 'case' int2str(iCase)]);
-%    system(['mkdir ' d.openFoamFolder 'case' int2str(iCase)]);
-%    system(['cp -r ' d.openFoamTemplate '/* ' d.openFoamFolder 'case' int2str(iCase)]);
-%    system(['cp ' d.caseRunner ' ' d.openFoamFolder ]);
-%end
+
 
 % %------------- END OF CODE --------------
 
