@@ -10,38 +10,40 @@ FoamFile
     version     2.0;
     format      ascii;
     class       volScalarField;
-    object      k;
+    object      nut;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [0 2 -2 0 0 0 0];
+dimensions      [0 2 -1 0 0 0 0];
 
-internalField   uniform 0.10935; 	
+internalField   uniform 0.066136223;
+
+
+// if l = 0.2 then
+//  nut = sqrt(1.5) * (U*I*l) = sqrt(1.5) * (27 * 0.01 * 0.2)= 0.066136223 
+
 
 boundaryField
 {
-    "(left|bottom|top|front).*"
+    #includeEtc "caseDicts/setConstraintTypes" 
+      "(left|right|bottom|top|front).*"
     {
         type            fixedValue;
-        value		$internalField;
+        value		uniform 0.066136223;
     }
 
-    right 
+   back // WALL
     {
-        type            inletOutlet;
-        inletValue      $internalField;
-        value           $internalField;
-     }
-    back
-    {
-        type            kqRWallFunction;
+        type            nutkWallFunction;
         value           uniform 0;
     }
 
-    carGroup 
+
+    carGroup // WALL
     {
-        type            kqRWallFunction;
+        type            nutkWallFunction;
         value           uniform 0;
     }
 
 }
+

@@ -2,51 +2,55 @@
 | =========                 |                                                 |
 | \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
 |  \\    /   O peration     | Version:  v1806                                 |
-|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
     version     2.0;
     format      ascii;
-    class       volScalarField;
-    object      nut;
+    class       volVectorField;
+    location    "0";
+    object      U;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [0 2 -1 0 0 0 0];
+dimensions      [0 1 -1 0 0 0 0];
 
-internalField   uniform 0.066136223;
-
-
-// if l = 0.2 then
-//  nut = sqrt(1.5) * (U*I*l) = sqrt(1.5) * (27 * 0.01 * 0.2)= 0.066136223 
-
+Uinlet         (27 0 0);
+internalField   uniform $Uinlet;
 
 boundaryField
 {
-      "(left|right|bottom|top|front).*"
+    #includeEtc "caseDicts/setConstraintTypes" 
+     left
     {
         type            fixedValue;
-        value		uniform 0.066136223;
+        value           uniform $Uinlet;
     }
 
-	"proc.*"
+     right
     {
-        type            processor;
+        type            inletOutlet;
+        value           uniform $Uinlet;
+        inletValue      uniform (0 0 0);
     }
 
-   back // WALL
+    "(bottom|top|front).*"
     {
-        type            nutkWallFunction;
-        value           uniform 0;
+        type            freestreamVelocity;
+        freestreamValue uniform $Uinlet;
+        value           uniform $Uinlet;
     }
 
+      back // WALL
+      {
+         type            noSlip;
+      } 
 
     carGroup // WALL
     {
-        type            nutkWallFunction;
-        value           uniform 0;
+        type            noSlip;
     }
 
 }

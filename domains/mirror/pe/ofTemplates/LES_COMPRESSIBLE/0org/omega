@@ -16,14 +16,30 @@ FoamFile
 
 dimensions      [0 0 -1 0 0 0 0];
 
-internalField   uniform 3.0139; 	
+internalField   uniform 6.7082039; 	
+
+// As for the turbulent length scale, it should be related to the mirror scales. Because, in general, we 
+// have turbulence near the mirror only. Our mirror size is: 0.16 x 0.25 x 0.14. Lets assume that maximum 
+// size is 0.25. Usually l is taken a few persentage of this scale. For example, for turbulent pipe, it is l=0.07d
+// hydraulic radius. So, if we follow them, our l = 0.07*0.25=0.0175. 
+// omega = C_mu^(-1/4) * sqrt(k) / l = 0.09^(-0.25) * sqrt (0.109) / 0.0175 = 1.825741858*0.316227766/0.0175 = 32.991443946
+// so, omega = 32.991443946
+//
+// if length scale is approx: 0.2, then omega = 3.0139
+
 		
 boundaryField
 {
+    #includeEtc "caseDicts/setConstraintTypes" 
     "(left|right|bottom|top|front).*"
     {
         type            fixedValue;
-        value		uniform 3.0139; 
+        value		uniform 6.7082039; 
+    }
+
+"proc.*"
+    {
+        type            processor;
     }
 
 

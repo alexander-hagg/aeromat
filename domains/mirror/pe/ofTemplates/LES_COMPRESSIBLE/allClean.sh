@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Source tutorial clean functions
+. $WM_PROJECT_DIR/bin/tools/CleanFunctions
+
+# remove surface and features
+\rm -rf constant/extendedFeatureEdgeMesh > /dev/null 2>&1
+rm -rf 0 > /dev/null 2>&1
+
+# remove old timings, execution signals, and results
+rm *.timing
+rm *.signal
+rm result.dat
+
+cleanCase

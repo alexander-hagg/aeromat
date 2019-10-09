@@ -21,7 +21,7 @@ addLayers       true;
 
 geometry
 {
-    test_1.stl
+    test.stl
     {
         type triSurfaceMesh;
         scale 0.001;
@@ -49,7 +49,7 @@ castellatedMeshControls
     features
     (
         {
-          file "test_1.eMesh";
+          file "test.eMesh";
           level 6;
         }
     );

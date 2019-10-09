@@ -22,7 +22,7 @@ internalField   uniform $Uinlet;
 
 boundaryField
 {
-
+    #includeEtc "caseDicts/setConstraintTypes" 
      left
     {
         type            fixedValue;

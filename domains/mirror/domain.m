@@ -105,8 +105,7 @@ d.view = @(x) patch('Faces',x.faces,'Vertices',x.vertices,...
 %% Precise Evaluation
 d.caseStart = 1;
 d.nVals = 1;                    % # of values of interest, e.g. dragForce (1), or cD and cL (2)
-d.maxDragForce = 25;            % Only use this to prevent really bad shapes to influence the surrogate model
-d.minDragForce = 0.001;         % Only use this to prevent really bad shapes to influence the surrogate model
+d.maxCD = 10;                   % Only use this to prevent really bad shapes to influence the surrogate model
 
 if d.hpc
     %% Cluster

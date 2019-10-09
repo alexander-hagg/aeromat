@@ -31,17 +31,20 @@ end
 [maxsort,maxsortID] = sort(error,'descend');
 
 selectedShapes = [minsortID(1:2),maxsortID(1:2)];
+oldFitnesses = [minsort(1:2),maxsort(1:2)];
 d.preciseEvaluate   = 'mirror_PreciseEvaluate';
 
 %% Run OpenFoam
 
 runTime = tic;
 
+fitness = [];
 fitness = feval(d.preciseEvaluate,params(selectedShapes,:),d); 
 disp(['Runtime: ' seconds2human(toc(runTime))]);
 
 % Save results
-save(['foamTest.mat'],'observations', 'fitness','d');
+theseParams = params(selectedShapes,:);
+save(['foamTest.mat'],'theseParams', 'fitness','oldFitnesses');
 
 
 

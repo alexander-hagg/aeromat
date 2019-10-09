@@ -20,7 +20,7 @@ internalField   uniform $pOut;
 
 boundaryField
 {
-
+    #includeEtc "caseDicts/setConstraintTypes" 
     "(left|right|bottom|top|front).*"
     {
         type            waveTransmissive;

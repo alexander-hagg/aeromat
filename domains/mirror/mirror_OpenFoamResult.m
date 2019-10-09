@@ -1,5 +1,5 @@
-function dragF = mirror_OpenFoamResult(x, stlFileName, openFoamFolder, maxDragForce, minDragForce)
-%mirror_openFoamResult - Evaluates a single shape in OpenFOAM
+function cD = mirror_OpenFoamResult(x, stlFileName, openFoamFolder, maxCD)
+%mirror_openFoamResult - Evaluates a single shape in OpenFOAM 
 %
 % Syntax:  [observation, value] = af_InitialSamples(p)
 %
@@ -9,13 +9,13 @@ function dragF = mirror_OpenFoamResult(x, stlFileName, openFoamFolder, maxDragFo
 %    openFoamFolder - OpenFOAM case folder
 %
 % Outputs:
-%    dragF  - [1X1] drag force result
+%    cD  - [1X1] drag coefficient result for mirror
 %
 
-% Author: Adam Gaier
+% Author: Alexander Hagg
 % Bonn-Rhein-Sieg University of Applied Sciences (BRSU)
-% email: adam.gaier@h-brs.de
-% Jun 2017; Last revision: 02-Aug-2017
+% email: alexander.hagg@h-brs.de
+% Jun 2017; Last revision: 09-Oct-2019
 
 %------------- BEGIN CODE --------------
 dragF = nan;
@@ -28,7 +28,7 @@ stlwrite(stlFileName, x);
 [~,~] = system(['touch ' openFoamFolder 'start.signal']);
 
 % Wait for results
-resultOutputFile = [openFoamFolder 'forces.dat'];
+resultOutputFile = [openFoamFolder 'postProcessing/forceCoeffs/0/coefficient.dat'];
 tic;
 while ~exist([openFoamFolder 'mesh.timing'] ,'file')
     display(['Waiting for Meshing: ' seconds2human(toc)]);
@@ -48,12 +48,13 @@ display(['|----| CFD done in ' seconds2human(toc)]);
 if exist(resultOutputFile, 'file')
     display(resultOutputFile);
     raw = importdata(resultOutputFile);
-    dragF = eval(raw{end}(16:27));
-    if dragF > maxDragForce || dragF < minDragForce % Sanity check to prevent model destruction
-        disp(['|-------> Drag Force calculated as ' num2str(dragF) ' (returning NaN)']);
-        dragF = nan; 
+    cD = mean(raw.data(end-99:end,2));
+    if abs(cD) > maxCD
+        disp(['|-------> Drag Coefficient calculated as ' num2str(cD) ' (returning 5)']);
+        cD = 5; 
         save([openFoamFolder  'error' int2str(randi(1000,1)) '.mat'], 'x');
     end
+    
 else
     save([openFoamFolder  'error' int2str(randi(1000,1)) '.mat'], 'x');    
 end

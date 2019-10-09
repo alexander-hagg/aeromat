@@ -11,14 +11,9 @@ module load openmpi/gnu
 module load mpitools/default
 module load gcc/default
 
-# . ~/OpenFOAM/OpenFOAM-v1906/etc/bashrc
-source /usr/local/stella/OpenFOAM1812/OpenFOAM-v1812/etc/bashrc WM_NCOMPPROCS=32
+source /usr/local/stella/OpenFOAM-v1906/OpenFOAM-v1906/etc/bashrc
 
 echo "Number of tasks: " echo $SLURM_NTASKS
-
-## Clean
-. $WM_PROJECT_DIR/bin/tools/CleanFunctions
-cleanCase
 
 start=`date +%s`
 
@@ -38,12 +33,12 @@ echo "$((meshTime-start))" >> mesh.timing
 # rm -r proc*
 # rm log.*
 
-## run LES
 runApplication decomposePar
 
 ## Copy initial conditions
 ls -d processor* | xargs -I {} rm -rf ./{}/0
-ls -d processor* | xargs -I {} cp -r 0 ./{}/0
+ls -d processor* | xargs -I {} cp -r 0org ./{}/0
+cp -r 0org 0
 
 mpirun -np 32 patchSummary
 mpirun -np 32 rhoPimpleFoam -parallel
@@ -61,3 +56,4 @@ echo "$((end-start))" >> all.timing
 cp postProcessing/forceCoeffs1/0/forceCoeffs.dat result.dat
 cp postProcessing/mirror/0/forces.dat forces.dat
 
+touch stop.signal

@@ -10,42 +10,36 @@ FoamFile
     version     2.0;
     format      ascii;
     class       volScalarField;
-    object      k;
+    object      omega;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [0 2 -2 0 0 0 0];
+dimensions      [0 0 -1 0 0 0 0];
 
-internalField   uniform 0.54; 	
-
-// turbulence intensity: I = u'/U. At weak/medium turbulence usuall u' = 0.01U, so in our case we can take 
-// approximately: I= 0.01, or 1% of the mean flow. Then from the formula of k, we can have 
-// k = 1.5*(I*U)^2 = 1.5*(0.27)^2=0.10935
-// now 0.6 --> =0.54
-
+internalField   uniform 3.0139; 	
+		
 boundaryField
 {
+    #includeEtc "caseDicts/setConstraintTypes" 
     "(left|right|bottom|top|front).*"
     {
         type            fixedValue;
-        value		uniform 0.54;
+        value		uniform 3.0139; 
     }
 
-    "proc.*"
+
+   back
     {
-        type            processor;
+        type            omegaWallFunction;
+        value           $internalField;
     }
 
-    back
-    {
-        type            kqRWallFunction;
-        value           uniform 0;
-    }
 
-    carGroup 
+   carGroup
     {
-        type            kqRWallFunction;
-        value           uniform 0;
+        type            omegaWallFunction;
+        value           $internalField;
     }
 
 }
+
