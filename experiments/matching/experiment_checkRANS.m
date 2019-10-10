@@ -31,7 +31,7 @@ end
 [maxsort,maxsortID] = sort(error,'descend');
 
 selectedShapes = [minsortID(1:2),maxsortID(1:2)];
-oldFitnesses = [minsort(1:2),maxsort(1:2)];
+shapeMatchErrors = [minsort(1:2),maxsort(1:2)];
 d.preciseEvaluate   = 'mirror_PreciseEvaluate';
 
 %% Run OpenFoam
@@ -42,9 +42,13 @@ fitness = [];
 fitness = feval(d.preciseEvaluate,params(selectedShapes,:),d); 
 disp(['Runtime: ' seconds2human(toc(runTime))]);
 
+%% Get old fitness values
+RANSreloaded = import('data/comparisonLESvsRANS100initsamples/RANS_reloaded.txt');
+oldFitnesses = RANSreloaded(selectedShapes);
+
 % Save results
 theseParams = params(selectedShapes,:);
-save(['foamTest.mat'],'theseParams', 'fitness','oldFitnesses');
+save(['foamTest.mat'],'theseParams', 'fitness','shapeMatchErrors','selectedShapes');
 
 
 
