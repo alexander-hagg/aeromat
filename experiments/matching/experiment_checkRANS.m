@@ -43,7 +43,7 @@ fitness = feval(d.preciseEvaluate,params(selectedShapes,:),d);
 disp(['Runtime: ' seconds2human(toc(runTime))]);
 
 %% Get old fitness values
-RANSreloaded = import('data/comparisonLESvsRANS100initsamples/RANS_reloaded.txt');
+RANSreloaded = import('data/comparisonLESvsRANS100initsamples/RANSreloaded.txt');
 oldFitnesses = RANSreloaded(selectedShapes);
 
 % Save results
