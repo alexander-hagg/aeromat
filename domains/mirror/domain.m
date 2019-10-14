@@ -27,16 +27,16 @@ parse.addOptional('nCases'  , 1);
 parse.addOptional('hpc', true);
 parse.addOptional('userName','ahagg2s');
 parse.addOptional('jobLocation','/scratch/ahagg2s/sailCFD/');
+parse.addOptional('cfdSolver','RANS_INCOMPRESSIBLE'); % 'RANS_INCOMPRESSIBLE' 'LES_COMPRESSIBLE'
 
 parse.parse(varargin{:});
 d.nCases      = parse.Results.nCases;
 d.hpc         = parse.Results.hpc;
 d.userName    = parse.Results.userName;
 d.jobLocation = parse.Results.jobLocation;
+d.cfdSolver      = parse.Results.cfdSolver;
 
 d.repo = ['/home/' d.userName '/aeromat'];
-
-d.solver = 'RANS_INCOMPRESSIBLE'; % 'RANS_INCOMPRESSIBLE' 'LES_COMPRESSIBLE'
 
 %%------------- BEGIN CODE --------------
 disp(['Mirror domain']);
@@ -76,17 +76,14 @@ d.initialSampleSource= '#notallFfdmirrors.mat';
 
 % - Feature Space
 % Map borders
-d.featureRes = [16 16];
-d.nDims      = length(d.featureRes);
 d.featureLabels = {'TotalCurvature', 'RelativeLength', 'MirrorSurface'};
 d.featureSelection = [1 2]; % Default selection (Total Curvature and Relative Length)
 d.extraMapValues = {'dragForce'};
-%d.extraMapValues = {'dragForce','confidence'};
 
 %% Features (domain specific)
 %   Feature Borders
-d.featureMin = [0.27  82  0];
-d.featureMax = [0.35  120 40000];
+d.featureMin = [0.1  90  0];
+d.featureMax = [1.5  180 40000];
 d.featureMin = d.featureMin(d.featureSelection);
 d.featureMax = d.featureMax(d.featureSelection);
 
@@ -111,7 +108,7 @@ if d.hpc
     %% Cluster
     % % Cases are executed and stored here (cases are started elsewhere)
     d.openFoamFolder = d.jobLocation
-    d.openFoamTemplate = [d.repo '/domains/mirror/pe/ofTemplates/' d.solver];  
+    d.openFoamTemplate = [d.repo '/domains/mirror/pe/ofTemplates/' d.cfdSolver];  
     % - There should be a folder called 'case1, case2, ..., caseN in this
     % folder, where N is the number of new samples added every iteration.
     % - Each folder has a shell script called 'caserunner.sh' which must be
@@ -123,7 +120,7 @@ else
     % TODO: make script that creates folders and runs caserunners locally
     disp('Local run not available!');
     d.openFoamFolder = d.jobLocation;
-    d.openFoamTemplate = [d.repo '/domains/mirror/pe/ofTemplates/' d.solver];  
+    d.openFoamTemplate = [d.repo '/domains/mirror/pe/ofTemplates/' d.cfdSolver];  
     
     %% Cases are executed and stored here
     d.caseRunner = [d.repo '/domains/mirror/pe/startCaseRunners.sh'];

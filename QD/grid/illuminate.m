@@ -28,8 +28,6 @@ function [map, percImproved, percValid, allMaps, percFilled, fitnessMean, driftM
 %------------- BEGIN CODE --------------
 if p.display.illu
     if nargin > 4; figHandleMap = varargin{1};else;f=figure(1);clf(f);figHandleMap = axes; end
-    if nargin > 5; figHandleTotalFit = varargin{2};else;f=figure(2);clf(f);figHandleTotalFit = axes;end
-    if nargin > 6; figHandleMeanDrift = varargin{3};else;f=figure(3);clf(f);figHandleMeanDrift = axes;end
     viewMap(map,d,figHandleMap); title(figHandleMap,'Fitness'); caxis(figHandleMap,[0 1]);drawnow;
 end
 
@@ -70,7 +68,7 @@ while (iGen <= p.nGens)
     
     %% View New Map
     if p.display.illu && (~mod(iGen,p.display.illuMod) || (iGen==p.nGens))
-        visualizeStats(figHandleMap,figHandleTotalFit,figHandleMeanDrift,iGen,p.nGens,numel(map.fitness),fitnessTotal,driftMean,map,d)
+        visualizeStats(figHandleMap,iGen,p.nGens,map,d)
     end
     if ~mod(iGen,25) || iGen==1
         disp([char(9) 'Illumination Generation: ' int2str(iGen) ' - Map Coverage: ' num2str(100*percFilled(iGen)) '% - Improvement: ' num2str(100*percImproved(iGen))]);
@@ -78,11 +76,17 @@ while (iGen <= p.nGens)
     iGen = iGen+1;
 end
 
+% Save stats in map
+map.stats.percImproved = percImproved;
+map.stats.percValid = percValid;
+map.stats.percFilled = percFilled;
+map.stats.fitnessMean = fitnessMean;
+
 % Warning if MAP-Elites hasn't converged yet (limit set in defaultParamSet)
 if percImproved(end) > p.convergeLimit; disp(['Warning: MAP-Elites finished while still making improvements ( >' num2str(p.convergeLimit*100) '% / generation )']);end
 end
 
-function visualizeStats(figHandle,figHandleTotalFit,figHandleMeanDrift,iGen,nGens,numElements,fitnessTotal,driftMean,map,d)
+function visualizeStats(figHandle,iGen,nGens,map,d)
 cla(figHandle);
 viewMap(map,d,figHandle);
 title(figHandle,['Fitness Gen ' int2str(iGen) '/' int2str(nGens)]);

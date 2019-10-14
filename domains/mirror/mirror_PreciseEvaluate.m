@@ -43,6 +43,10 @@ for iRound=0:nRounds-1
                d.maxCD);
         end
     end  
+    
+    % -log(cD) to allow maximization
+    PEValue = -log(PEValue);
+    
     timings(iRound+1) = toc;
     disp(['Round ' int2str(iRound) ' -- Time so far ' seconds2human(timings(iRound+1))])
     % Assign results of batch 

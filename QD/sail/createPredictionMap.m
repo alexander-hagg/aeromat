@@ -33,8 +33,6 @@ function [predMap, percImproved, percImprovement] = createPredictionMap(gpModel,
 %
 %------------- BEGIN CODE --------------
 if nargin > 4; figHandleMap = varargin{1};end
-if nargin > 5; figHandleTotalFit = varargin{2};end
-if nargin > 6; figHandleMeanDrift = varargin{3};end
 
 d.varCoef = 0; % no award for uncertainty
 % Construct functions
@@ -46,7 +44,7 @@ observation = gpModel.trainInput;
 [fitness,values] = acqFunction(observation);
 
 predMap                                              = createMap(d, p);
-[replaced, replacement, percImprovement, features]  = nicheCompete(observation, fitness, predMap, d, p);
+[replaced, replacement, percImprovement, features]   = nicheCompete(observation, fitness, predMap, d, p);
 predMap                                              = updateMap(replaced,replacement,predMap,fitness,observation, features);                    
 
 % Illuminate based on surrogate models

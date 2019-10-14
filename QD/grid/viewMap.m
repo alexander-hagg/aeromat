@@ -76,6 +76,6 @@ axis(figHandle,[0.5 size(mapMatrix.fitness,1)+0.5 0.5 size(mapMatrix.fitness,2)+
 
 imageHandle = imgHandle;
 hold(figHandle,'on')
-features = reshape(mapMatrix.features,mapRes(1)*mapRes(2),[]);
-scatter(figHandle,0.5+features(:,d.featureSelection(1))*mapRes(1),0.5+features(:,d.featureSelection(2))*mapRes(2),8,[0 0 0],'filled')
+%features = reshape(mapMatrix.features,mapRes(1)*mapRes(2),[]);
+%scatter(figHandle,0.5+features(:,d.featureSelection(1))*mapRes(1),0.5+features(:,d.featureSelection(2))*mapRes(2),8,[0 0 0],'filled')
 %------------- END OF CODE --------------

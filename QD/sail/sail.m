@@ -5,37 +5,32 @@ function [predMap,modelPred] = sail(acqMap,p,d,varargin)
 % Author: Adam Gaier, Alexander Hagg
 % Bonn-Rhein-Sieg University of Applied Sciences (HBRS)
 % email: adam.gaier@h-brs.de, alexander.hagg@h-brs.de
-% Nov 2016; Last revision: 23-Aug-2019
-surrogate = []; if nargin > 4; surrogate = varargin{1}; end
+% Nov 2016; Last revision: 14-Oct-2019
+
 if p.display.illu
     if nargin > 5; figHandleAcqMap = varargin{2};else;f=figure(4);clf(f);figHandleAcqMap = axes; end
     title(figHandleAcqMap,'Acquisition Fcn'); drawnow;
-    if nargin > 6; figHandleMap = varargin{3};else;f=figure(1);clf(f);figHandleMap = axes; end
-    if nargin > 7; figHandleTotalFit = varargin{4};else;f=figure(2);clf(f);figHandleTotalFit = axes;end
-    if nargin > 8; figHandleMeanDrift = varargin{5};else;f=figure(3);clf(f);figHandleMeanDrift = axes;end
-    
 end
 
-p.predMapResolution = d.featureRes;
+p.predMapResolution = p.featureResolution;
 p.featureResolution = p.infill.featureResolution;
 
-if isempty(surrogate)
+% Use given samples or extract from map
+observation = []; if nargin > 3; observation = varargin{1}; end
+trueFitness = []; if nargin > 4; trueFitness = varargin{2}; end
+
+if isempty(observation)
     observation = reshape(acqMap.genes,[],d.dof);
     valid = all(~isnan(observation)');
     observation = observation(valid,:);
     nSamples = size(observation,1);
-    p.numInitSamples = nSamples; %Reduce to valid solutions ... bit hacky
+    p.numInitSamples = nSamples; 
     trueFitness = reshape(acqMap.fitness,numel(valid),[]);
     trueFitness = trueFitness(valid,:);
 else
-    observation = surrogate.trainInput;
     nSamples = size(observation,1);
-    p.numInitSamples = nSamples;
-    trueFitness = surrogate.trainOutput;
+    p.numInitSamples = nSamples; 
 end
-
-% Calculate how many samples we need to acquire
-p.infill.nTotalSamples = nSamples + p.infill.nAddSamplesPerIteration;
 
 parents = observation;
 p.infill.modelParams = paramsGP(size(observation,2));
@@ -88,7 +83,7 @@ while nSamples <= p.infill.nTotalSamples
         if isfield(d,'commonSobolGen')
             sobSet = d.commonSobolGen;
         else
-            sobSet  = scramble(sobolset(d.nDims,'Skip',1e3),'MatousekAffineOwen');
+            sobSet  = scramble(sobolset(numel(p.infill.featureResolution),'Skip',1e3),'MatousekAffineOwen');
         end
         if isfield(d,'commonSobolGenPtr')
             sobPoint = commonSobolGenPtr;
@@ -173,8 +168,7 @@ disp(['PE ' int2str(nSamples) ' | Training Prediction Models']);
 p.infill.modelParams.functionEvals = 100;
 modelPred = trainGP(observation,trueFitness,p.infill.modelParams);
 p.featureResolution = p.predMapResolution;
-pcfg = p; pcfg.display.illu = false;
-[predMap] = createPredictionMap(modelPred,'mirror_AcquisitionFunc',pcfg,d);
+[predMap] = createPredictionMap(modelPred,'mirror_AcquisitionFunc',p,d);
 
 if p.display.illu
     viewMap(predMap,d)
