@@ -38,11 +38,7 @@ while nSamples <= p.infill.nTotalSamples
     %% 1 - Create Surrogate and Acquisition Function 
     % Surrogate models are created from all evaluated samples, and these
     % models are used to produce an acquisition function.
-    % Only retrain model parameters every 'p.trainingMod' iterations
     p.infill.model.functionEvals = 100;
-    %if (nSamples==p.numInitSamples || mod(nSamples,p.infill.trainingMod*p.infill.nAdditionalSamples))
-    %    p.infill.model.functionEvals = 100;
-    %end
     model = trainGP(observation,trueFitness,p.infill.modelParams);
     acqFunction = createAcquisitionFcn('mirror_AcquisitionFunc',model,d.varCoef);
     
@@ -58,7 +54,7 @@ while nSamples <= p.infill.nTotalSamples
     
     % Evaluate data set with acquisition function
     try
-        [fitness,values] = acqFunction(parents);
+        [fitness,~] = acqFunction(parents);
     catch exception
         disp(exception.identifier);
     end
@@ -104,13 +100,13 @@ while nSamples <= p.infill.nTotalSamples
         
         % Replace with next in Sobol Sequence
         newSampleRange = sobPoint:(sobPoint+nNans-1);
-        mapLinIndx = sobol2indx(sobSet, newSampleRange, d, p, acqMap.edges);
+        mapLinIndx = sobol2indx(sobSet, newSampleRange, p.featureResolution, acqMap.edges);
         
         % Replace unreachable bins
         emptyCells = isnan(acqMap.fitness(mapLinIndx));
         while any(emptyCells)
             nEmptyCells = sum(emptyCells);
-            mapLinIndx(emptyCells) = sobol2indx(sobSet,sobPoint:sobPoint+nEmptyCells-1, d, p, acqMap.edges);
+            mapLinIndx(emptyCells) = sobol2indx(sobSet,sobPoint:sobPoint+nEmptyCells-1, p.featureResolution, acqMap.edges);
             emptyCells = isnan(acqMap.fitness(mapLinIndx));
             sobPoint = sobPoint + nEmptyCells;
         end

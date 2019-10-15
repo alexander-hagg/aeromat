@@ -78,7 +78,7 @@ d.initialSampleSource= '#notallFfdmirrors.mat';
 % Map borders
 d.featureLabels = {'TotalCurvature', 'RelativeLength', 'MirrorSurface'};
 d.featureSelection = [1 2]; % Default selection (Total Curvature and Relative Length)
-d.extraMapValues = {'dragForce'};
+d.extraMapValues = {'dragCoefficient'};
 
 %% Features (domain specific)
 %   Feature Borders
@@ -107,7 +107,7 @@ d.maxCD = 10;                   % Only use this to prevent really bad shapes to 
 if d.hpc
     %% Cluster
     % % Cases are executed and stored here (cases are started elsewhere)
-    d.openFoamFolder = d.jobLocation
+    d.openFoamFolder = d.jobLocation;
     d.openFoamTemplate = [d.repo '/domains/mirror/pe/ofTemplates/' d.cfdSolver];  
     % - There should be a folder called 'case1, case2, ..., caseN in this
     % folder, where N is the number of new samples added every iteration.
@@ -117,7 +117,6 @@ if d.hpc
     
 else
     %% Local
-    % TODO: make script that creates folders and runs caserunners locally
     disp('Local run not available!');
     d.openFoamFolder = d.jobLocation;
     d.openFoamTemplate = [d.repo '/domains/mirror/pe/ofTemplates/' d.cfdSolver];  

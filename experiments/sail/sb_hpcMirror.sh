@@ -12,5 +12,5 @@
 module load matlab/default
 
 # Run experiment
-cd /home/ahagg2s/aeromat/experiments
-matlab -nodisplay -nosplash -nodesktop -r "sail_Mirror_RANSIncompressible"
+cd /home/$USER/aeromat/experiments
+matlab -nodisplay -nosplash -nodesktop -r "QD_LESvsRANS_withUpdates"

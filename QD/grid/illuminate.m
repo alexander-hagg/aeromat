@@ -1,4 +1,4 @@
-function [map, percImproved, percValid, allMaps, percFilled, fitnessMean, driftMean, fitnessTotal] = illuminate(map,fitnessFunction,p,d,varargin)
+function [map, percImproved, percValid, allMaps, percFilled, fitnessMean, fitnessTotal] = illuminate(map,fitnessFunction,p,d,varargin)
 %illuminate - QD with Multi-dimensional Archive of Phenotypic Elites algorithm
 %
 % Syntax:  [map, percImproved, percValid, h, allMaps, percFilled] = illuminate(fitnessFunction,map,p,d,varargin)

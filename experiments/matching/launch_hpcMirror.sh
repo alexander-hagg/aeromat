@@ -3,12 +3,11 @@ module load matlab/default
 
 # Create base OpenFOAM cases and launch case runners
 nCases=4
-export destFolderName=/scratch/$USER/sailCFD/
-mkdir $destFolderName
+export jobLocation=/scratch/$USER/sailCFD/
+mkdir $jobLocation
 
 # 32 (real) Cores (1 job per node)
-export repositoryFolderName="/home/$USER/aeromat"
-export templateFolderName="$repositoryFolderName/domains/mirror/pe/ofTemplates/RANS_INCOMPRESSIBLE"
+export repositoryLocation="/home/$USER/aeromat"
 
 for (( i=1; i<=$nCases; i++ ))
 do
@@ -16,7 +15,7 @@ do
 	echo $caseName	
 	rm -r $caseName/*
  	cp -TR $templateFolderName $caseName
-	export PBS_WORKDIR="$caseName"
+	# export PBS_WORKDIR="$caseName"
 	sbatch $caseName/submit.sh
 done 
 
