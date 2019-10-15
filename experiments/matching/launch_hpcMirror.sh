@@ -11,11 +11,10 @@ export repositoryLocation="/home/$USER/aeromat"
 
 for (( i=1; i<=$nCases; i++ ))
 do
- 	caseName=$destFolderName"case$i"
+ 	export caseName=$destFolderName"case$i"
 	echo $caseName	
 	rm -r $caseName/*
  	cp -TR $templateFolderName $caseName
-	# export PBS_WORKDIR="$caseName"
 	sbatch $caseName/submit.sh
 done 
 

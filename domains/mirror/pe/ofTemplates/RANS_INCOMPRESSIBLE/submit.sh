@@ -10,6 +10,6 @@
 #SBATCH --exclusive
 
 # Run experiment
-cd $PBS_WORKDIR
+cd $caseName
 bash caseRunner.sh
 
