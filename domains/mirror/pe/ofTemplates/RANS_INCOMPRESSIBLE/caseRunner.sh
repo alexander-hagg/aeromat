@@ -4,7 +4,7 @@ startFile="start.signal"
 doneFile="done.signal"
 stopFile="stop.signal"
 
-./Allclean
+./allClean.sh
 rm _inactive.state
 touch _active.state
 
