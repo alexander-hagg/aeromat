@@ -29,10 +29,10 @@ p.infill            = infillParamSet;
 surrogateAssistance = true;
 
 %% FOR TESTING ONLY
-%disp('>>> !!! Testing parameters are on!')
-%d.preciseEvaluate = 'mirror_DummyPreciseEvaluate';
-%p.nGens = 25;
-%p.infill.nAdditionalSamples;
+% disp('>>> !!! Testing parameters are on!')
+% d.preciseEvaluate = 'mirror_DummyPreciseEvaluate';
+% p.nGens = 25;
+% p.infill.nAdditionalSamples = 10;
 %%
 
 % ----------------------------------------------------------------------------------
