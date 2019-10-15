@@ -13,7 +13,7 @@ export template="$REPOSITORYLOCATION/domains/mirror/pe/ofTemplates/$CFDSOLVER"
 
 for (( i=1; i<=$NCASES; i++ ))
 do
-	caseName=$JOBLOCATION"case$i"
+	export caseName=$JOBLOCATION"case$i"
 	echo $caseName
     rm -r $caseName/*
 	cp -TR $template $caseName

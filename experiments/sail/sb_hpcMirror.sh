@@ -12,5 +12,5 @@
 module load matlab/default
 
 # Run experiment
-cd /home/$USER/aeromat/experiments
+cd /home/$USER/aeromat/experiments/sail
 matlab -nodisplay -nosplash -nodesktop -r "QD_LESvsRANS_withUpdates"
