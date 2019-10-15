@@ -11,7 +11,7 @@ export REPOSITORYLOCATION="/home/$USER/aeromat"
 export CFDSOLVER="RANS_INCOMPRESSIBLE"
 export template="$REPOSITORYLOCATION/domains/mirror/pe/ofTemplates/$CFDSOLVER"
 
-for (( i=1; i<=$nCases; i++ ))
+for (( i=1; i<=$NCASES; i++ ))
 do
 	caseName=$JOBLOCATION"case$i"
 	echo $caseName
