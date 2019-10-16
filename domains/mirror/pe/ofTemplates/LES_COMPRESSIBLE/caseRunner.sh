@@ -24,7 +24,7 @@ if [ -f "$startFile" ]
 	then
 	echo "$startFile found: starting OpenFOAM case."
 	# remove old timings, execution signals, and results
-	bash Allclean.sh
+	bash allClean.sh
 	bash LES_COMPRESSIBLE.sh
 else
 	echo -n "Waiting for $startFile..."

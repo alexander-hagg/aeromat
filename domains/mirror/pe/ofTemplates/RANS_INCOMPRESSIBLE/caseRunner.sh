@@ -23,7 +23,8 @@ fi
 if [ -f "$startFile" ]
 	then
 	echo "$startFile found: starting OpenFOAM case."
-	bash Allclean.sh
+    rm start.signal
+	bash allClean.sh
 	bash RANS_INCOMPRESSIBLE.sh
 else
 	echo -n "Waiting for $startFile..."

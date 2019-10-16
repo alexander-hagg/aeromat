@@ -33,7 +33,7 @@ tic;
 while ~exist([openFoamFolder 'mesh.timing'] ,'file')
     display(['Waiting for Meshing: ' seconds2human(toc)]);
     pause(10);
-    if (toc > tTimeout); dragF = nan; return; end;
+    if (toc > tTimeout); cD = nan; return; end
 end
 display(['|----| Meshing done in ' seconds2human(toc)]);
 
@@ -41,7 +41,7 @@ tic;
 while ~exist([openFoamFolder 'all.timing'] ,'file')
     display(['Waiting for CFD: ' seconds2human(toc)]);
     pause(10);
-    if (toc > tTimeout); dragF = nan; return; end;
+    if (toc > tTimeout); cD = nan; return; end
 end
 display(['|----| CFD done in ' seconds2human(toc)]);
 

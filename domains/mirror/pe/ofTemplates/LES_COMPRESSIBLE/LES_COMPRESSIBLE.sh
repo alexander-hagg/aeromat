@@ -49,11 +49,9 @@ echo "$((cfdEnd-cfdStart))" >> cfd.timing
 
 runApplication reconstructPar
 
-end=`date +%s`
-echo "$((end-start))" >> all.timing
-
 # Return results
 cp postProcessing/forceCoeffs1/0/forceCoeffs.dat result.dat
 cp postProcessing/mirror/0/forces.dat forces.dat
 
-touch stop.signal
+end=`date +%s`
+echo "$((end-start))" >> all.timing
