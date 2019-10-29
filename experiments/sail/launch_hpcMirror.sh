@@ -2,7 +2,7 @@
 module load matlab/default
 
 # Create base OpenFOAM cases and launch case runners
-NCASES=10
+export NCASES=10
 export JOBLOCATION="/scratch/$USER/sailCFD/"
 mkdir $JOBLOCATION
 

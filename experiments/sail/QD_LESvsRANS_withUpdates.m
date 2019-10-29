@@ -14,6 +14,7 @@
 %------------- BEGIN CODE --------------
 clear;clc;
 nCases = str2num(getenv('NCASES'));if isempty(nCases); nCases=1; end
+disp(['Running SAIL with ' int2str(nCases) ' parallel cases']);
 homeDir = getenv('HOME');
 userName = getenv('USER');
 repositoryLocation = getenv('REPOSITORYLOCATION'); if isempty(repositoryLocation); repositoryLocation = '.'; end
@@ -36,14 +37,44 @@ surrogateAssistance = true;
 %%
 
 % ----------------------------------------------------------------------------------
-disp('>>> Load initial data');
-load('data/initSetParamsAndFitness.mat');
-initSamples = mirrorParams;
-if strcmp(cfdSolver,'RANS_INCOMPRESSIBLE')
-    fitness = -log(cD_RANSinc);
-elseif strcmp(cfdSolver,'LES_COMPRESSIBLE')    
-    fitness = -log(cD_LEScom);
+disp('>>> Load latest data (either from initial sampling or latest experiment');
+
+candidateDataFiles = dir([repositoryLocation '/data/QD_LESvsRANS_withUpdates/']);
+candidateDataFiles = candidateDataFiles(3:end);
+
+lastDataFileID = 0;
+dataFile = 'initSamples.mat';
+for i=1:length(candidateDataFiles)
+    if ~isempty(strfind(candidateDataFiles(i).name,cfdSolver)) 
+        k = strfind(candidateDataFiles(i).name,cfdSolver);
+        id = candidateDataFiles(i).name(k + length(cfdSolver) + 1);
+        id = str2num(id);
+        if id > lastDataFileID
+            dataFile = candidateDataFiles(i).name;
+            lastDataFileID = id;
+        end
+    end
 end
+
+if ~exist(dataFile,'file')
+    % If no data is found, load data from initial sampling experiment
+    load('data/initSetParamsAndFitness.mat');
+    initSamples = mirrorParams;
+    if strcmp(cfdSolver,'RANS_INCOMPRESSIBLE')
+        fitness = -log(cD_RANSinc);
+    elseif strcmp(cfdSolver,'LES_COMPRESSIBLE')    
+        fitness = -log(cD_LEScom);
+    end
+    save([repositoryLocation '/data/QD_LESvsRANS_withUpdates/init.mat'],'initSamples','fitness');
+else
+    load(dataFile);
+    initSamples = surrogate.trainInput;
+    fitness = surrogate.trainOutput;
+end
+
+numSamplesPerExperiment = p.infill.nTotalSamples - p.numInitSamples;
+p.numInitSamples = size(initSamples,1);
+p.infill.nTotalSamples = p.numInitSamples + numSamplesPerExperiment;
 
 initmap                                             = createMap(d, p);
 [replaced, replacement, percImprovement, features]  = nicheCompete(initSamples, fitness, initmap, d, p);
@@ -54,7 +85,7 @@ disp('>>> Illumination');
 p.display.illu = false;
 [map,surrogate] = sail(initmap,p,d,initSamples,fitness);
 
-save(['data/QD_LESvsRANS_withUpdates/' cfdSolver '.mat'],'map','surrogate','initmap','initSamples','fitness');
+save([repositoryLocation '/data/QD_LESvsRANS_withUpdates/' cfdSolver '_' int2str(lastDataFileID+1) '.mat'],'map','surrogate','initmap','initSamples','fitness');
 disp('>>> Finished');
 
 % viewMap(map,d);

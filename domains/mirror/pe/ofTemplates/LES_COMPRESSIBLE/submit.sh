@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --partition=hpc          # partition (queue)
+#SBATCH --partition=hpc3          # partition (queue)
 #SBATCH --nodes=1                # number of nodes
 #SBATCH --ntasks-per-node=32     # number of cores per node
 #SBATCH --mem=160G               # memory per node in MB (different units with suffix K|M|G|T)
