@@ -50,8 +50,7 @@ echo "$((cfdEnd-cfdStart))" >> cfd.timing
 runApplication reconstructPar -latestTime
 
 # Return results
-cp postProcessing/forceCoeffs1/0/forceCoeffs.dat result.dat
-cp postProcessing/mirror/0/forces.dat forces.dat
+cp postProcessing/forceCoeffs/0/coefficient.dat result.dat
 
 end=`date +%s`
 echo "$((end-start))" >> all.timing

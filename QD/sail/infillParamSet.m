@@ -4,7 +4,7 @@ function infill = infillParamSet(varargin)
 infill.nTotalSamples      = 250;
 infill.nAdditionalSamples = 10;
 infill.featureResolution  = [20 20];
-infill.retryInvalid       = true;
+infill.retryInvalid       = false;
 
 end
 

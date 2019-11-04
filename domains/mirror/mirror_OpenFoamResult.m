@@ -19,7 +19,7 @@ function cD = mirror_OpenFoamResult(x, stlFileName, openFoamFolder, maxCD)
 
 %------------- BEGIN CODE --------------
 dragF = nan;
-tTimeout = 30000;
+tTimeout = 300000;
 
 % Create STL
 stlwrite(stlFileName, x);
@@ -47,7 +47,7 @@ display(['|----| CFD done in ' seconds2human(toc)]);
 
 if exist(resultOutputFile, 'file')
     display(resultOutputFile);
-    raw = importdata(resultOutputFile);
+    raw = importdata(resultOutputFile);pause(10);    
     cD = mean(raw.data(end-99:end,2));
     if abs(cD) > maxCD
         disp(['|-------> Drag Coefficient calculated as ' num2str(cD) ' (returning 5)']);
