@@ -46,8 +46,7 @@ mpirun -np 32 rhoPimpleFoam -parallel
 cfdEnd=`date +%s`
 echo "$((cfdEnd-cfdStart))" >> cfd.timing
 
-
-runApplication reconstructPar
+runApplication reconstructPar -latestTime
 
 # Return results
 cp postProcessing/forceCoeffs/0/coefficient.dat result.dat

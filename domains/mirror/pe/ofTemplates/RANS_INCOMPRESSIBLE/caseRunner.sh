@@ -9,7 +9,7 @@ rm _inactive.state
 touch _active.state
 
 while true
-sleep 1s
+sleep 10s
 do
 
 if [ -f "$stopFile" ]
@@ -23,8 +23,9 @@ fi
 if [ -f "$startFile" ]
 	then
 	echo "$startFile found: starting OpenFOAM case."
-    rm start.signal
-	bash allClean.sh
+	rm _inactive.state
+	touch _active.state
+    bash allClean.sh
 	bash RANS_INCOMPRESSIBLE.sh
 else
 	echo -n "Waiting for $startFile..."

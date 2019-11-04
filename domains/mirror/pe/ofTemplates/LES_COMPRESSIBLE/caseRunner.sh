@@ -9,7 +9,7 @@ rm _inactive.state
 touch _active.state
 
 while true
-sleep 1s
+sleep 10s
 do
 
 if [ -f "$stopFile" ]
@@ -23,8 +23,9 @@ fi
 if [ -f "$startFile" ]
 	then
 	echo "$startFile found: starting OpenFOAM case."
-	# remove old timings, execution signals, and results
-	bash allClean.sh
+	rm _inactive.state
+	touch _active.state
+    bash allClean.sh
 	bash LES_COMPRESSIBLE.sh
 else
 	echo -n "Waiting for $startFile..."

@@ -28,11 +28,11 @@ stlwrite(stlFileName, x);
 [~,~] = system(['touch ' openFoamFolder 'start.signal']);
 
 % Wait for results
-resultOutputFile = [openFoamFolder 'postProcessing/forceCoeffs/0/coefficient.dat'];
+resultOutputFile = [openFoamFolder 'result.dat'];
 tic;
 while ~exist([openFoamFolder 'mesh.timing'] ,'file')
     display(['Waiting for Meshing: ' seconds2human(toc)]);
-    pause(10);
+    pause(30);
     if (toc > tTimeout); cD = nan; return; end
 end
 display(['|----| Meshing done in ' seconds2human(toc)]);
@@ -40,25 +40,25 @@ display(['|----| Meshing done in ' seconds2human(toc)]);
 tic;
 while ~exist([openFoamFolder 'all.timing'] ,'file')
     display(['Waiting for CFD: ' seconds2human(toc)]);
-    pause(10);
+    pause(30);
     if (toc > tTimeout); cD = nan; return; end
 end
 display(['|----| CFD done in ' seconds2human(toc)]);
 
 if exist(resultOutputFile, 'file')
     display(resultOutputFile);
-    raw = importdata(resultOutputFile);pause(10);    
+    raw = importdata(resultOutputFile);  
     cD = mean(raw.data(end-99:end,2));
     if abs(cD) > maxCD
         disp(['|-------> Drag Coefficient calculated as ' num2str(cD) ' (returning 5)']);
         cD = 5; 
         save([openFoamFolder  'error' int2str(randi(1000,1)) '.mat'], 'x');
     end
-    
 else
     save([openFoamFolder  'error' int2str(randi(1000,1)) '.mat'], 'x');    
 end
 
 system(['touch ' openFoamFolder 'done.signal']);
+system(['rm ' openFoamFolder 'start.signal']);
 %[~,~] = system(['(cd '   openFoamFolder '; ./Allclean)']);
 

@@ -46,7 +46,6 @@ mpirun -np 32 simpleFoam -parallel
 cfdEnd=`date +%s`
 echo "$((cfdEnd-cfdStart))" >> cfd.timing
 
-
 runApplication reconstructPar -latestTime
 
 # Return results
