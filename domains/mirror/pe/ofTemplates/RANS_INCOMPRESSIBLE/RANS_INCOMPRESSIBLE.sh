@@ -7,13 +7,15 @@
 #SBATCH --output=slurm.%j.out   
 #SBATCH --error=slurm.%j.err    
 
-module load openmpi/gnu
-module load mpitools/default
+# module load openmpi/gnu
+# module load mpitools/default
 module load gcc/default
 
-source /usr/local/stella/OpenFOAM-v1906/OpenFOAM-v1906/etc/bashrc
+source /usr/local/stella/OpenFOAM-v1906-gcc/OpenFOAM-v1906/etc/bashrc
 
 echo "Number of tasks: " echo $SLURM_NTASKS
+
+bash allClean.sh
 
 start=`date +%s`
 
@@ -25,6 +27,7 @@ runApplication surfaceFeatureExtract
 runApplication decomposePar
 
 mpirun -np 32 snappyHexMesh -parallel  -overwrite
+# runParallel snappyHexMesh
 
 meshTime=`date +%s`
 echo "$((meshTime-start))" >> mesh.timing
@@ -33,7 +36,7 @@ echo "$((meshTime-start))" >> mesh.timing
 # rm -r proc*
 # rm log.*
 
-runApplication decomposePar
+# runApplication decomposePar
 
 ## Copy initial conditions
 ls -d processor* | xargs -I {} rm -rf ./{}/0
@@ -46,7 +49,7 @@ mpirun -np 32 simpleFoam -parallel
 cfdEnd=`date +%s`
 echo "$((cfdEnd-cfdStart))" >> cfd.timing
 
-runApplication reconstructPar -latestTime
+# runApplication reconstructPar -latestTime
 
 # Return results
 cp postProcessing/forceCoeffs/0/coefficient.dat result.dat

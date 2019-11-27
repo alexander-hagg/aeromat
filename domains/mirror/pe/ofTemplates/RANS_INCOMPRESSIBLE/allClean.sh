@@ -1,5 +1,7 @@
 #!/bin/sh
 
+source /usr/local/stella/OpenFOAM-v1906-gcc/OpenFOAM-v1906/etc/bashrc
+
 # Source tutorial clean functions
 . $WM_PROJECT_DIR/bin/tools/CleanFunctions
 

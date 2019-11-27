@@ -23,9 +23,6 @@ fi
 if [ -f "$startFile" ]
 	then
 	echo "$startFile found: starting OpenFOAM case."
-	rm _inactive.state
-	touch _active.state
-    bash allClean.sh
 	bash LES_COMPRESSIBLE.sh
 else
 	echo -n "Waiting for $startFile..."

@@ -43,7 +43,7 @@ candidateDataFiles = dir([repositoryLocation '/data/QD_LESvsRANS_withUpdates/'])
 candidateDataFiles = candidateDataFiles(3:end);
 
 lastDataFileID = 0;
-dataFile = 'initSamples.mat';
+dataFile = '';
 for i=1:length(candidateDataFiles)
     if ~isempty(strfind(candidateDataFiles(i).name,cfdSolver)) 
         k = strfind(candidateDataFiles(i).name,cfdSolver);
@@ -71,8 +71,10 @@ else
     initSamples = surrogate.trainInput;
     fitness = surrogate.trainOutput;
 end
+disp(['Running SAIL based on data file: ' dataFile]);
+disp(['Number of samples: ' int2str(length(fitness))]);
 
-numSamplesPerExperiment = p.infill.nTotalSamples - p.numInitSamples;
+numSamplesPerExperiment = 200;
 p.numInitSamples = size(initSamples,1);
 p.infill.nTotalSamples = p.numInitSamples + numSamplesPerExperiment;
 
@@ -83,9 +85,12 @@ initmap                                             = updateMap(replaced,replace
 %% ----------------------------------------------------------------------------------
 disp('>>> Illumination');
 p.display.illu = false;
-[map,surrogate] = sail(initmap,p,d,initSamples,fitness);
 
-save([repositoryLocation '/data/QD_LESvsRANS_withUpdates/' cfdSolver '_' int2str(lastDataFileID+1) '.mat'],'map','surrogate','initmap','initSamples','fitness');
+filename = [repositoryLocation '/data/QD_LESvsRANS_withUpdates/' cfdSolver '_' int2str(lastDataFileID+1)];
+
+[map,surrogate] = sail(initmap,p,d,initSamples,fitness,[filename '_sail' '.mat']);
+
+save([filename '_finished' '.mat'],'map','surrogate','initmap','initSamples','fitness');
 disp('>>> Finished');
 
 % viewMap(map,d);

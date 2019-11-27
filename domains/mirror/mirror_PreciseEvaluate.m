@@ -1,5 +1,5 @@
 function [value,timings] = mirror_PreciseEvaluate(nextObservations, d)
-%mirror_Preci/home/alex/Documents/phd/CFD/snappyhexmesh/mirror/constant/system/controlDictseEvaluate - Send mirror shapes in parallel to OpenFOAM func
+%mirror_PreciseEvaluate - Send mirror shapes in parallel to OpenFOAM func
 %
 % Syntax:  [observation, value] = af_InitialSamples(p)
 %
@@ -13,10 +13,10 @@ function [value,timings] = mirror_PreciseEvaluate(nextObservations, d)
 %
 % Other m-files required: mirror_openFoamResult
 
-% Author: Adam Gaier
+% Author: Adam Gaier, Alexander Hagg
 % Bonn-Rhein-Sieg University of Applied Sciences (BRSU)
-% email: adam.gaier@h-brs.de
-% Jun 2017; Last revision: 02-Aug-2017
+% email: adam.gaier@h-brs.de, alexander.hagg@h-brs.de
+% Jun 2017; Last revision: 27-Nov-2019
 
 %------------- BEGIN CODE --------------
 folderBaseName = d.openFoamFolder;

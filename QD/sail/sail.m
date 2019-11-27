@@ -8,7 +8,7 @@ function [predMap,modelPred] = sail(acqMap,p,d,varargin)
 % Nov 2016; Last revision: 14-Oct-2019
 
 if p.display.illu
-    if nargin > 5; figHandleAcqMap = varargin{2};else;f=figure(4);clf(f);figHandleAcqMap = axes; end
+    if nargin > 6; figHandleAcqMap = varargin{4};else;f=figure(4);clf(f);figHandleAcqMap = axes; end
     title(figHandleAcqMap,'Acquisition Fcn'); drawnow;
 end
 
@@ -18,6 +18,7 @@ p.featureResolution = p.infill.featureResolution;
 % Use given samples or extract from map
 observation = []; if nargin > 3; observation = varargin{1}; end
 trueFitness = []; if nargin > 4; trueFitness = varargin{2}; end
+filename = 'saved.mat'; if nargin > 5; filename = varargin{3}; end
 
 if isempty(observation)
     observation = reshape(acqMap.genes,[],d.dof);
@@ -136,7 +137,10 @@ while nSamples <= p.infill.nTotalSamples
             noValue = nanValue | oldDuplicate' | newDuplicate';
         else
             % Do not try invalid shapes
-            newValue(isnan(newValue(:,1)),:) = repmat([0 0],sum(isnan(newValue(:,1))),1);
+	    inval = isnan(newValue(:,1));
+	    disp(['Invalid shapes found: ' mat2str(newValue(inval,:))]);
+            newValue(inval,:) = repmat([5],sum(inval),1);
+	    disp(['Set to: ' mat2str(newValue(inval,:))]);
             % We still have to skip samples from empty bins
             noValue = any(isnan(nextGenes),2);
         end
@@ -156,6 +160,12 @@ while nSamples <= p.infill.nTotalSamples
         visualizeStats(figHandleAcqMap,acqMap,d,nSamples);
     end
     
+    fid = fopen('status.txt','wt');
+    fprintf(fid, mat2str(fitness));
+    fclose(fid);    
+
+    save(filename,'observation','trueFitness');
+
 end % end acquisition loop
 
 

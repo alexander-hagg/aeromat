@@ -15,6 +15,8 @@ source /usr/local/stella/OpenFOAM-v1906/OpenFOAM-v1906/etc/bashrc
 
 echo "Number of tasks: " echo $SLURM_NTASKS
 
+bash allClean.sh
+
 start=`date +%s`
 
 . $WM_PROJECT_DIR/bin/tools/RunFunctions
@@ -24,7 +26,7 @@ runApplication blockMesh
 runApplication surfaceFeatureExtract
 runApplication decomposePar
 
-mpirun -np 32 snappyHexMesh -parallel -overwrite
+runParallel snappyHexMesh 32 -overwrite
 
 meshTime=`date +%s`
 echo "$((meshTime-start))" >> mesh.timing
@@ -33,20 +35,20 @@ echo "$((meshTime-start))" >> mesh.timing
 # rm -r proc*
 # rm log.*
 
-runApplication decomposePar
+# runApplication decomposePar
 
 ## Copy initial conditions
 ls -d processor* | xargs -I {} rm -rf ./{}/0
 ls -d processor* | xargs -I {} cp -r 0org ./{}/0
 cp -r 0org 0
 
-mpirun -np 32 patchSummary
-mpirun -np 32 rhoPimpleFoam -parallel
+runParallel patchSummary 32 
+runParallel rhoPimpleFoam 32 
 
 cfdEnd=`date +%s`
 echo "$((cfdEnd-cfdStart))" >> cfd.timing
 
-runApplication reconstructPar -latestTime
+# runApplication reconstructPar -latestTime
 
 # Return results
 cp postProcessing/forceCoeffs/0/coefficient.dat result.dat

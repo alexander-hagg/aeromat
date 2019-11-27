@@ -18,7 +18,6 @@ function cD = mirror_OpenFoamResult(x, stlFileName, openFoamFolder, maxCD)
 % Jun 2017; Last revision: 09-Oct-2019
 
 %------------- BEGIN CODE --------------
-dragF = nan;
 tTimeout = 300000;
 
 % Create STL
@@ -48,17 +47,27 @@ display(['|----| CFD done in ' seconds2human(toc)]);
 if exist(resultOutputFile, 'file')
     display(resultOutputFile);
     raw = importdata(resultOutputFile);  
-    cD = mean(raw.data(end-99:end,2));
+    if size(raw.data,1) < 100
+    	cD = nan;
+    	display(['CFD only managed to calculate : ' int2str(size(raw.data,1)) ' iterations']);
+    	save([openFoamFolder  'error' int2str(randi(1000,1)) '.mat'], 'x');
+    else
+    	cD = mean(raw.data(end-99:end,2));
+    end
     if abs(cD) > maxCD
         disp(['|-------> Drag Coefficient calculated as ' num2str(cD) ' (returning 5)']);
         cD = 5; 
         save([openFoamFolder  'error' int2str(randi(1000,1)) '.mat'], 'x');
     end
+
+    system(['rm ' openFoamFolder '/result.dat']);
+    system(['rm ' openFoamFolder '/*.signal']);
+    system(['rm ' openFoamFolder '/*.timing']);
 else
     save([openFoamFolder  'error' int2str(randi(1000,1)) '.mat'], 'x');    
 end
 
 system(['touch ' openFoamFolder 'done.signal']);
 system(['rm ' openFoamFolder 'start.signal']);
-%[~,~] = system(['(cd '   openFoamFolder '; ./Allclean)']);
+% system(['(cd '   openFoamFolder '; bash allClean.sh)']);
 
