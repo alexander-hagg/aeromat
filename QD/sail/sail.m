@@ -55,7 +55,7 @@ while nSamples <= p.infill.nTotalSamples
     
     % Evaluate data set with acquisition function
     try
-        [fitness,~] = acqFunction(parents);
+        [fitness,predValue] = acqFunction(parents);
     catch exception
         disp(exception.identifier);
     end
