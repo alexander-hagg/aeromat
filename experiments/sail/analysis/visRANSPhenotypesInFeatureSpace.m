@@ -3,7 +3,6 @@ d                   = domain;
 
 load('RANS_INCOMPRESSIBLE_3.mat');
 
-%map.fitness = exp(-map.fitness);
 map.fitness = -map.fitness;
 genes = reshape(map.genes,[],d.dof);
 fitness = reshape(map.fitness,[],1);
@@ -11,13 +10,9 @@ fitness = reshape(map.fitness,[],1);
 xPosMap = 1:size(map.fitness,1);
 yPosMap = 1:size(map.fitness,2);
 [X,Y] = ndgrid(xPosMap,yPosMap);
-
 positioning = [X(:) Y(:)];
 
-
-
 genes(all(isnan(genes)'),:) = [];
-
 positioning(isnan(fitness),:) = [];
 fitness(isnan(fitness)) = [];
 %%

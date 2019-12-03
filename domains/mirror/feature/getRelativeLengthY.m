@@ -1,4 +1,4 @@
-function [length, maxVertex, minVertex, maxVertexID, minVertexID] = getRelativeLength(mirror, d)
+function [length, maxVertex, minVertex, maxVertexID, minVertexID] = getRelativeLengthY(mirror, d)
 %getRelativeLength - Returns relative length of mirror (x/y)
 %
 % Syntax:  [relativeLength] = getLength(mirror, d)

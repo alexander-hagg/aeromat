@@ -76,7 +76,7 @@ d.initialSampleSource= '#notallFfdmirrors.mat';
 
 % - Feature Space
 % Map borders
-d.featureLabels = {'TotalCurvature', 'RelativeLength', 'MirrorSurface'};
+d.featureLabels = {'RelativeLengthX', 'RelativeLengthY'};
 d.featureSelection = [1 2]; % Default selection (Total Curvature and Relative Length)
 d.extraMapValues = {'dragCoefficient'};
 
@@ -84,8 +84,8 @@ d.extraMapValues = {'dragCoefficient'};
 %   Feature Borders
 %d.featureMin = [0.1  90  0];
 %d.featureMax = [1.5  180 40000];
-d.featureMin = [1e5  180];
-d.featureMax = [5e6  350];
+d.featureMin = [100   150];
+d.featureMax = [150  250];
 
 d.featureMin = d.featureMin(d.featureSelection);
 d.featureMax = d.featureMax(d.featureSelection);
