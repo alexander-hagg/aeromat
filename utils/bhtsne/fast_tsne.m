@@ -72,7 +72,7 @@ function mappedX = fast_tsne(X, no_dims, initial_dims, perplexity, theta, alg, m
     % Perform the initial dimensionality reduction using PCA
     X = double(X);
     X = bsxfun(@minus, X, mean(X, 1));
-    M = pca(X,'NumComponents',initial_dims,'Algorithm',alg);
+    [M,~,~,~,~] = pca(X,'NumComponents',initial_dims,'Algorithm',alg);
     X = X * M;
     
     tsne_path = which('fast_tsne');

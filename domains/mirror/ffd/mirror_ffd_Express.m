@@ -31,6 +31,7 @@ if ~precomputed
     if doRotation
         theta           = atan((0.83-0.45)/1.28);
         rotMat          = [cos(theta) -sin(theta) 0; sin(theta) cos(theta) 0; 0 0 1];
+        deRotMat        = [cos(-theta) -sin(-theta) 0; sin(-theta) cos(-theta) 0; 0 0 1];        
         STLMeshpoints   = STLMeshpoints * rotMat;
     end
     
@@ -142,6 +143,7 @@ if ~precomputed
     ffdP.submesh = submesh;
     if doRotation
         ffdP.rotMat = rotMat;
+        ffdP.deRotMat = deRotMat;
         ffdP.theta = theta;
     end
     ffdP.normalizationFactors = normalizationFactors;
@@ -166,6 +168,7 @@ else
     submesh = ffdP.submesh;
     if doRotation
         rotMat = ffdP.rotMat;
+        deRotMat = ffdP.deRotMat;
         theta = ffdP.theta;
     end
     normalizationFactors = ffdP.normalizationFactors;
@@ -213,8 +216,7 @@ for iDeforms = 1:nDeforms
     STLMeshpoints(submesh,:) = STLMeshpoints(submesh,:).*repmat((maxMeshPoint-minMeshPoint),sum(submesh),1) + repmat(minMeshPoint,sum(submesh),1);
     % Rotate back
     if doRotation
-        rotMat = [cos(-theta) -sin(-theta) 0; sin(-theta) cos(-theta) 0; 0 0 1];
-        STLMeshpoints = STLMeshpoints * rotMat;
+        STLMeshpoints = STLMeshpoints * deRotMat;
     end
     % Denormalize mesh points
     newMeshPoints_denorm = repmat(normalizationFactors.xmin,1,size(STLMeshpoints,1)) + (STLMeshpoints'-normalizationFactors.ymin).*repmat(normalizationFactors.xrange,1,size(STLMeshpoints,1))./normalizationFactors.yrange;

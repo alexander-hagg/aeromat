@@ -28,14 +28,14 @@ function curvature = getTotalCurvature(mirror, d)
 %%------------- BEGIN CODE --------------
 
 % Get length relative curvature and length of each line
-p1 = mirror(:,d.features.curvature.ids(1));
-p2 = mirror(:,d.features.curvature.ids(12));
-theta           = -atan((p1(1)-p2(1))/(p1(2)-p2(2)));
-rotMat          = [cos(theta) -sin(theta) 0; sin(theta) cos(theta) 0; 0 0 1];
-mirror = (mirror'*rotMat)';
-line = mirror(:,d.features.curvature.ids)';
-lineCurv = LineCurvature2D(line(:,[2 3]));
-curvature = sum(abs(lineCurv(:)));
+mirror = mirror - mean(mirror')';
+mirror = mirror'*d.FfdP.rotMat; mirror = mirror';
+
+line = mirror';
+lineCurvYZ = LineCurvature2D(line(:,[2 3]));
+lineCurvXY = LineCurvature2D(line(:,[1 2]));
+lineCurvXZ = LineCurvature2D(line(:,[1 3]));
+curvature = sum(abs(lineCurvYZ(:))) + sum(abs(lineCurvXY(:))) + sum(abs(lineCurvXZ(:)));
 
 %% Visualize mirror, curvature line and extremes (which determined angle)
 % figure(7);hold off;

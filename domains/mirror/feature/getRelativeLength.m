@@ -27,14 +27,21 @@ function [length, maxVertex, minVertex, maxVertexID, minVertexID] = getRelativeL
 %%------------- BEGIN CODE --------------
 mirror = mirror - mean(mirror')';
 mirror = mirror'*d.FfdP.rotMat;
-mirrorSubmesh = mirror(d.features.subMeshIds,:);
-[maxVertex,maxVertexID] = max(mirrorSubmesh(:,1));
-[minVertex,minVertexID] = min(mirrorSubmesh(:,1));
-[~,maxVertexID] = intersect(mirror(:,2)',mirrorSubmesh(maxVertexID,2));
-[~,minVertexID] = intersect(mirror(:,2)',mirrorSubmesh(minVertexID,2));
+[maxVertex,maxVertexID] = max(mirror(:,2));
+[minVertex,minVertexID] = min(mirror(:,2));
+%[~,maxVertexID] = intersect(mirror(:,2)',mirror(maxVertexID,2));
+%[~,minVertexID] = intersect(mirror(:,2)',mirror(minVertexID,2));
 length = (maxVertex - minVertex);
-%------------- END OF CODE --------------
-
+%% ------------- END OF CODE --------------
+% figure(1);%hold off;
+% scatter3(mirror(:,1),mirror(:,2),mirror(:,3));view(0,90);
+% hold on;
+% scatter3(mirror(minVertexID,1),mirror(minVertexID,2),500,32,'k','filled');
+% scatter3(mirror(maxVertexID,1),mirror(maxVertexID,2),500,32,'b','filled');
+% 
+% view(0,90);axis equal;
+% axis([-120 120 -200 200 -100 500]);
+% axis equal;
 
 
 

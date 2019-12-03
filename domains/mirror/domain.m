@@ -82,13 +82,16 @@ d.extraMapValues = {'dragCoefficient'};
 
 %% Features (domain specific)
 %   Feature Borders
-d.featureMin = [0.1  90  0];
-d.featureMax = [1.5  180 40000];
+%d.featureMin = [0.1  90  0];
+%d.featureMax = [1.5  180 40000];
+d.featureMin = [1e5  180];
+d.featureMax = [5e6  350];
+
 d.featureMin = d.featureMin(d.featureSelection);
 d.featureMax = d.featureMax(d.featureSelection);
 
 % IDs of changeable vertices of base mesh
-load('baseSubMeshIds.mat');d.features.subMeshIds = baseSubMeshIds;clear baseSubMeshIds;
+%load('baseSubMeshIds.mat');d.features.subMeshIds = baseSubMeshIds;clear baseSubMeshIds;
 % Vertice IDs of lines on which curvature is measured
 load('verticeIDs.mat');d.features.curvature.ids = verticeIDs;clear verticeIDs;
 % Reflective Surface
