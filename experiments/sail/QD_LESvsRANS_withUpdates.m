@@ -76,7 +76,8 @@ disp(['Number of samples: ' int2str(length(fitness))]);
 
 numSamplesPerExperiment = 200;
 p.numInitSamples = size(initSamples,1);
-p.infill.nTotalSamples = p.numInitSamples + numSamplesPerExperiment;
+p.infill.nTotalSamples = 500
+% p.numInitSamples + numSamplesPerExperiment;
 
 initmap                                             = createMap(d, p);
 [replaced, replacement, percImprovement, features]  = nicheCompete(initSamples, fitness, initmap, d, p);
