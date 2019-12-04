@@ -68,7 +68,7 @@ while (iGen <= p.nGens)
     
     %% View New Map
     if p.display.illu && (~mod(iGen,p.display.illuMod) || (iGen==p.nGens))
-        visualizeStats(figHandleMap,iGen,p.nGens,map,d)
+        visualizeStats(figHandleMap,iGen,p.nGens,map,d);
     end
     if ~mod(iGen,25) || iGen==1
         disp([char(9) 'Illumination Generation: ' int2str(iGen) ' - Map Coverage: ' num2str(100*percFilled(iGen)) '% - Improvement: ' num2str(100*percImproved(iGen))]);
