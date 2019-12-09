@@ -74,10 +74,9 @@ end
 disp(['Running SAIL based on data file: ' dataFile]);
 disp(['Number of samples: ' int2str(length(fitness))]);
 
-numSamplesPerExperiment = 200;
+numSamplesPerExperiment = 50;
 p.numInitSamples = size(initSamples,1);
-p.infill.nTotalSamples = 500
-% p.numInitSamples + numSamplesPerExperiment;
+p.infill.nTotalSamples = p.numInitSamples + numSamplesPerExperiment;
 
 initmap                                             = createMap(d, p);
 [replaced, replacement, percImprovement, features]  = nicheCompete(initSamples, fitness, initmap, d, p);
