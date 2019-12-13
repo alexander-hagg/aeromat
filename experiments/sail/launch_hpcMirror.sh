@@ -8,7 +8,7 @@ mkdir $JOBLOCATION
 
 # 32 (real) Cores (1 job per node)
 export REPOSITORYLOCATION="/home/$USER/aeromat"
-export CFDSOLVER="RANS_INCOMPRESSIBLE"
+export CFDSOLVER="LES_COMPRESSIBLE"
 export template="$REPOSITORYLOCATION/domains/mirror/pe/ofTemplates/$CFDSOLVER"
 
 for (( i=1; i<=$NCASES; i++ ))

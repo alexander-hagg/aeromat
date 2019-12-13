@@ -19,7 +19,7 @@ homeDir = getenv('HOME');
 userName = getenv('USER');
 repositoryLocation = getenv('REPOSITORYLOCATION'); if isempty(repositoryLocation); repositoryLocation = '.'; end
 jobLocation = getenv('JOBLOCATION');
-cfdSolver = getenv('CFDSOLVER'); if isempty(cfdSolver); cfdSolver = 'RANS_INCOMPRESSIBLE'; end % 'RANS_INCOMPRESSIBLE' 'LES_COMPRESSIBLE'
+cfdSolver = getenv('CFDSOLVER'); if isempty(cfdSolver); cfdSolver = 'LES_INCOMPRESSIBLE'; end % 'RANS_INCOMPRESSIBLE' 'LES_COMPRESSIBLE'
 runOncluster = true;
 
 % ----------------------------------------------------------------------------------

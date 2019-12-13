@@ -27,7 +27,6 @@ runApplication surfaceFeatureExtract
 runApplication decomposePar
 
 mpirun -np 32 snappyHexMesh -parallel  -overwrite
-# runParallel snappyHexMesh
 
 meshTime=`date +%s`
 echo "$((meshTime-start))" >> mesh.timing

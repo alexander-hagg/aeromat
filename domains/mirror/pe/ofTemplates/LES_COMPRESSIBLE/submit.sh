@@ -10,6 +10,8 @@
 #SBATCH --exclusive
 
 # Run experiment
+module load openmpi/gnu
+
 cd $caseName
 bash caseRunner.sh
 
