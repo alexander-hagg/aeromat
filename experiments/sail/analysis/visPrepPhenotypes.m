@@ -1,5 +1,5 @@
-function phenotypes = visPrepPhenotypes(phenotypeData,genes)
-if exist(phenotypeData,'file')
+function phenotypes = visPrepPhenotypes(genes,phenotypeData)
+if ~isempty(phenotypeData) && exist(phenotypeData,'file')
     phenotypes = load(phenotypeData);
     phenotypes = phenotypes.phenotypes;
 else
@@ -16,6 +16,8 @@ else
         phenotypes{i}.vertices = (phenotypes{i}.vertices-minV)./(maxV-minV);
     end
     
-    save(phenotypeData,'phenotypes');
+    if ~isempty(phenotypeData)
+        save(phenotypeData,'phenotypes');
+    end
 end
 end
