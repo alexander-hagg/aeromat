@@ -14,3 +14,8 @@ module load matlab/default
 # Run experiment
 cd /home/$USER/aeromat/experiments/sail
 matlab -nodisplay -nosplash -nodesktop -r "QD_LESvsRANS_withUpdates"
+
+scancel -u ahagg2s
+
+cd /home/$USER/aeromat/experiments/sail
+bash launch_hpcMirror.sh

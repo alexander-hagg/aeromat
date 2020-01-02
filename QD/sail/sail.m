@@ -160,11 +160,11 @@ while nSamples <= p.infill.nTotalSamples
         visualizeStats(figHandleAcqMap,acqMap,d,nSamples);
     end
     
-    fid = fopen('status.txt','wt');
-    fprintf(fid, mat2str(fitness));
-    fclose(fid);    
+%    fid = fopen('status.txt','wt');
+%    fprintf(fid, mat2str(fitness));
+%    fclose(fid);    
 
-    save(filename,'observation','trueFitness');
+%    save(filename,'observation','trueFitness');
 
 end % end acquisition loop
 

@@ -19,7 +19,7 @@ homeDir = getenv('HOME');
 userName = getenv('USER');
 repositoryLocation = getenv('REPOSITORYLOCATION'); if isempty(repositoryLocation); repositoryLocation = '.'; end
 jobLocation = getenv('JOBLOCATION');
-cfdSolver = getenv('CFDSOLVER'); if isempty(cfdSolver); cfdSolver = 'LES_INCOMPRESSIBLE'; end % 'RANS_INCOMPRESSIBLE' 'LES_COMPRESSIBLE'
+cfdSolver = getenv('CFDSOLVER'); if isempty(cfdSolver); cfdSolver = 'LES_COMPRESSIBLE'; end % 'RANS_INCOMPRESSIBLE' 'LES_COMPRESSIBLE'
 runOncluster = true;
 
 % ----------------------------------------------------------------------------------
@@ -56,6 +56,8 @@ for i=1:length(candidateDataFiles)
     end
 end
 
+%%
+
 if ~exist(dataFile,'file')
     % If no data is found, load data from initial sampling experiment
     load('data/initSetParamsAndFitness.mat');
@@ -90,7 +92,7 @@ filename = [repositoryLocation '/data/QD_LESvsRANS_withUpdates/' cfdSolver '_' i
 
 [map,surrogate] = sail(initmap,p,d,initSamples,fitness,[filename '_sail' '.mat']);
 
-save([filename '_finished' '.mat'],'map','surrogate','initmap','initSamples','fitness');
+save([filename '.mat'],'map','surrogate','initmap','initSamples','fitness');
 disp('>>> Finished');
 
 % viewMap(map,d);
