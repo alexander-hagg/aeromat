@@ -2,12 +2,13 @@ DOMAIN              = 'mirror'; addpath(genpath('.'));rmpath(genpath('domains'))
 d                   = domain;
 p                   = defaultParamSet;
 
-load('RANS_INCOMPRESSIBLE_4.mat');
+resultsRANS = load('RANS_INCOMPRESSIBLE_4.mat');
+resultsLES  = load('LES_COMPRESSIBLE_5.mat');
 
 
 %%
-p.featureResolution = [75 75];
-p.nGens = 6000;
+p.featureResolution = [25 25];
+p.nGens = 4000;
 p.display.illu = false;
 p.display.illuMod = 25;
 
@@ -20,19 +21,7 @@ predMap.fitness = exp(-predMap.fitness);
 
 
 %%
-genes = reshape(predMap.genes,[],d.dof);
-fitness = reshape(predMap.fitness,[],1);
-
-xPosMap = 1:size(predMap.fitness,1);
-yPosMap = 1:size(predMap.fitness,2);
-[X,Y] = ndgrid(xPosMap,yPosMap);
-positioning = [X(:) Y(:)];
-
-genes(all(isnan(genes)'),:) = [];
-positioning(isnan(fitness),:) = [];
-fitness(isnan(fitness)) = [];
-
-phenotypes = visPrepPhenotypes(genes,[]);
+[genes,fitness,phenotypes,positioning] = unpackMap(predMap,d);
 
 % Flatten phenotypes
 flatPhenos = [];
@@ -41,13 +30,14 @@ for i=1:size(phenotypes,2)
 end
 
 %%
-skip = 8;
+skip = 16;
 
 nonskipped = all((mod(positioning,skip)==0)');
 nBins = 8;
 clrs = parula(nBins+1);clrs(1,:) = [];
 
-edges = [0,0.3:(0.1/5):0.4,1]
+%edges = [0,0.3:(0.1/5):0.4,1]
+edges = [0,0.5:(0.2/5):0.7,1]
 [~,edges,binAssignment] = histcounts(fitness,edges);
 
 
@@ -86,8 +76,10 @@ cb.TickLabels{end} = '> 0.42';
 
 %% Show Prototypes
 % Get phenotypic similarity
-pcaDims = 60; perplexity = 50; theta = 0.7;
-mappedX = fast_tsne(flatPhenos, 2, pcaDims, perplexity, theta)
+perplexity = 50; theta = 0.7;
+%mappedX = fast_tsne(flatPhenos, 2, pcaDims, perplexity, theta)
+mappedX = tsne(flatPhenos,'Algorithm','barneshut','Perplexity',perplexity,'Theta',theta);
+
 
 %%
 minMap = min(mappedX(:));
@@ -95,13 +87,14 @@ maxMap = max(mappedX(:));
 normMappedX = 3*(mappedX-minMap)./(maxMap-minMap);
 
 prototypeLayers = [5 10 20 40];
+%prototypeLayers = [5];
 
 clear fig;
 fig(1) = figure(1);hold off;
 pointSize = 1;
 for ii=1:length(prototypeLayers)
     numPrototypes = prototypeLayers(ii);
-    [idx,~,~,~,centroids] = kmedoids(mappedX,numPrototypes)%,'Distance','correlation');
+    [idx,~,~,~,centroids] = kmedoids(mappedX,numPrototypes);
     
     subplot(length(prototypeLayers),1,ii);hold off;
     for cI=1:length(centroids)
@@ -123,7 +116,7 @@ ax.XTick = [];
 ax.YTick = [];
 ax.ZTick = [];
 end
-%%
+
 
 cb = colorbar;
 caxis([0.3 0.42]);
