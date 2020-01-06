@@ -7,7 +7,7 @@ resultsLES  = load('LES_COMPRESSIBLE_6.mat');
 
 %%
 p.featureResolution = [25 25];
-p.nGens = 100;
+p.nGens = 4000;
 p.display.illu = false;p.display.illuMod = 25;
 
 [resultsRANS.map] = createPredictionMap(resultsRANS.surrogate,'mirror_AcquisitionFunc',p,d);
@@ -21,6 +21,7 @@ p.display.illu = false;p.display.illuMod = 25;
 genes = [genesRANS;genesLES];
 phenotypes = [phenotypesRANS,phenotypesLES];
 fitness = [fitnessRANS;fitnessLES];
+positioning = [positioningRANS;positioningLES];
 
 flatPhenos = [];
 for i=1:size(phenotypes,2)
@@ -49,3 +50,55 @@ title('Phenotypic similarity');
 
 
 %%
+
+skip = 7;
+%fitness = feval('predictGP', resultsRANS.surrogate, genes);
+%fitness = fitness(:,1);
+
+nonskipped = all((mod(positioning,skip)==0)');
+nBins = 16;
+clrs = parula(nBins+1);clrs(1,:) = [];
+
+
+
+%edges = [0,0.3:(0.1/5):0.4,1]
+edges = [0,0.5:(0.2/5):0.7,1]
+[~,edges,binAssignment] = histcounts(fitness,edges);
+
+binAssignment = binAssignment + 1;
+
+
+pointSize = 2;
+
+clear fig;
+fig(1) = figure;hold off;
+for i=1:numel(fitness)
+    if ~nonskipped(i); continue; end
+    vX = phenotypes{i}.vertices(1,1:2:end);
+    vY = phenotypes{i}.vertices(2,1:2:end);
+    vZ = phenotypes{i}.vertices(3,1:2:end);
+    zPosition = 0;
+    if i > length(fitnessRANS)
+        zPosition = 0.5;
+    end
+    scatter3(vX + positioning(i,1)/skip/2, vY + positioning(i,2)/skip/2, vZ+zPosition,pointSize,clrs(binAssignment(i),:),'filled');
+    hold on;
+    drawnow;
+    disp([int2str(i) '/' int2str(size(genes,1))]);
+end
+
+view(100,20)
+axis equal;
+title(['Selection of Phenotypes from ' int2str(p.featureResolution(1)) 'x' int2str(p.featureResolution(2)) ' Feature Space RANS']);
+xlabel(d.featureLabels{1});
+ylabel(d.featureLabels{2});
+ax = gca;
+ax.XTick = [];
+ax.YTick = [];
+ax.ZTick = [];
+
+cb = colorbar;
+%caxis([0.3 0.42]);
+cb.Label.String = 'cD';
+%cb.TickLabels{1} = '< 0.3';
+%cb.TickLabels{end} = '> 0.42';
