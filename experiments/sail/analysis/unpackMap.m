@@ -13,6 +13,6 @@ genes(all(isnan(genes)'),:) = [];
 positioning(isnan(fitness),:) = [];
 fitness(isnan(fitness)) = [];
 
-phenotypes = visPrepPhenotypes(genes,[]);
+phenotypes = getPrepPhenotypes(genes,[]);
 end
 

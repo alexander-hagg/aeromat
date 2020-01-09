@@ -1,4 +1,4 @@
-function phenotypes = visPrepPhenotypes(genes,phenotypeData)
+function phenotypes = getPrepPhenotypes(genes,phenotypeData)
 if ~isempty(phenotypeData) && exist(phenotypeData,'file')
     phenotypes = load(phenotypeData);
     phenotypes = phenotypes.phenotypes;

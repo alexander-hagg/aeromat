@@ -32,14 +32,20 @@ function [predMap, percImproved, percImprovement] = createPredictionMap(gpModel,
 % Jun 2017; Last revision: 03-Aug-2017
 %
 %------------- BEGIN CODE --------------
-if nargin > 4; figHandleMap = varargin{1};end
+
+if nargin > 4; observation = varargin{1};disp('Initial samples from user');end
+if nargin > 5; figHandleMap = varargin{2};end
 
 d.varCoef = 0; % no award for uncertainty
 % Construct functions
 acqFunction = createAcquisitionFcn(fitnessFunction,gpModel,0);
 
 % Seed map with precisely evaluated solutions
-observation = gpModel.trainInput;
+if ~exist('observation','var')
+    disp('Initial samples from model');
+    observation = gpModel.trainInput;
+end
+    
 
 [fitness,values] = acqFunction(observation);
 
