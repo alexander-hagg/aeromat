@@ -3,7 +3,7 @@ d                   = domain;
 p                   = defaultParamSet;
 
 resultsRANS = load('RANS_INCOMPRESSIBLE_4.mat');
-resultsLES  = load('LES_COMPRESSIBLE_8.mat');
+resultsLES  = load('LES_COMPRESSIBLE_9.mat');
 
 %%
 load('data/initSetParamsAndFitness.mat');
@@ -16,7 +16,7 @@ p.display.illu = false;p.display.illuMod = 25;
 [resultsRANS.map] = createPredictionMap(resultsRANS.surrogate,'mirror_AcquisitionFunc',p,d,initSamples);
 [resultsLES.map] = createPredictionMap(resultsLES.surrogate,'mirror_AcquisitionFunc',p,d,initSamples);
 
-
+save('aeromat','d','p','resultsRANS','resultsLES','initSamples');
 %%
 [genesRANS,fitnessRANS,phenotypesRANS,positioningRANS] = unpackMap(resultsRANS.map,d);
 [genesLES,fitnessLES,phenotypesLES,positioningLES] = unpackMap(resultsLES.map,d);
@@ -38,6 +38,8 @@ perplexity = 50; theta = 0.1;
 mappedGenes = tsne(genes,'Algorithm','exact','Perplexity',perplexity);%,'Theta',theta);
 % Phenotypic similarity
 mappedPhenos = tsne(flatPhenos','Algorithm','exact','Perplexity',perplexity);%,'Theta',theta);
+
+save('aeromat','d','p','resultsRANS','resultsLES','initSamples','mappedGenes','mappedPhenos');
 
 %% Show similarity spaces (genetic and phenotypic)
 figure(1);
@@ -92,7 +94,7 @@ cmap = parula(3);cmap(1,:) = [];
 colorsCFD = [repmat(cmap(1,:),numel(phenotypesRANS),1);repmat(cmap(2,:),numel(phenotypesLES),1)];
 
 % 19 26 27 28
-for i=2:numPrototypes
+for i=1:numPrototypes
     figure;
     h = visPhenotypes(phenotypes(idxG==i),positioning(idxG==i,:)/4,colorsCFD(idxG==i,:));
     axis equal;
@@ -100,7 +102,7 @@ for i=2:numPrototypes
     title('Genetic Similarity, mixed class');
     ax = gca;ax.XTick = [];ax.YTick = [];ax.ZTick = [];
     [un,~,ids] = unique(colorsCFD(idxG==i,:),'rows');    
-    h1 = scatter(nan,nan,32,un(1,:),'filled');h2 = scatter(nan,nan,32,un(2,:),'filled');
+    h1 = scatter(nan,nan,32,cmap(1,:),'filled');h2 = scatter(nan,nan,32,cmap(2,:),'filled');
     legend([h1 h2],'RANS','LES');
     drawnow;
 end
@@ -133,23 +135,51 @@ colorsCFD = [repmat(cmap(1,:),numel(phenotypesRANS),1);repmat(cmap(2,:),numel(ph
 clear fig;
 for i=1:numPrototypes
     fig(i) = figure(i);
-    subplot(2,1,1);
+    subplot(3,3,1);hold off;
     scatter(mappedPhenos(idxP==i,1),mappedPhenos(idxP==i,2),16,colorsCFD(idxP==i,:),'filled');
     hold on;
-    axis equal;ax = gca;ax.XTick = [];ax.YTick = [];ax.ZTick = [];axis tight;
+    scatter(mappedPhenos(centroidsP(i),1),mappedPhenos(centroidsP(i),2),32,'r','filled');
+    axis equal;ax = gca;ax.XTick = [];ax.YTick = [];ax.ZTick = [];
     [un,~,ids] = unique(colorsCFD,'rows');    
-    h1 = scatter(nan,nan,32,un(1,:),'filled');h2 = scatter(nan,nan,32,un(2,:),'filled');
-    l = legend([h1 h2],'RANS','LES');
-    l.Position(1) = 0.8;
-    subplot(2,1,2);
-    h = visPhenotypes(phenotypes(centroidsP(i)),positioning(centroidsP(i),:)/4,'k');
+    h1 = scatter(nan,nan,32,un(1,:),'filled');h2 = scatter(nan,nan,32,un(2,:),'filled'); h3 = scatter(nan,nan,32,[1 0 0],'filled');
+    l = legend([h1 h2 h3],'RANS','LES','Prototype');
+    l.Position(1) = 0.4;
+    title('Phenotype Class');
+    
+    
+    subplot(3,3,3);hold off;
+    skip = 0.1;
+    minGrid = min(mappedPhenos(idxP==i,:));maxGrid = max(mappedPhenos(idxP==i,:));
+    [xq,yq] = meshgrid(minGrid(1):skip:maxGrid(1), minGrid(2):skip:maxGrid(2));
+    vq = griddata(mappedPhenos(idxP==i,1),mappedPhenos(idxP==i,2),fitness(idxP==i),xq,yq,'natural');
+    sf = surf(xq,yq,vq);
+    sf.EdgeAlpha = 0;
+    view(0,90);
+    axis equal;ax = gca;ax.XTick = [];ax.YTick = [];ax.ZTick = [];
+    title('Fitness');
+    
+    subplot(3,3,[4,5,7,8]);hold off;
+    h = visPhenotypes(phenotypes(centroidsP(i)),positioning(centroidsP(i),:)/4,'k',2);
     axis equal;ax = gca;ax.XTick = [];ax.YTick = [];ax.ZTick = [];
     view(120,20);
+    title('Prototype');
+    
+    subplot(3,3,6);hold off;
+    h = visPhenotypes(phenotypes(centroidsP(i)),positioning(centroidsP(i),:)/4,'k',2);
+    axis equal;ax = gca;ax.XTick = [];ax.YTick = [];ax.ZTick = [];
+    view(0,90);
+    %title('Prototype XY');
+    
+    subplot(3,3,9);hold off;
+    h = visPhenotypes(phenotypes(centroidsP(i)),positioning(centroidsP(i),:)/4,'k',2);
+    axis equal;ax = gca;ax.XTick = [];ax.YTick = [];ax.ZTick = [];
+    view(0,0);
+    %title('Prototype XZ');
     
     drawnow;
 end
 
-save_figures(fig, '.', 'classes', 16, [7 7])
+save_figures(fig, '.', 'classes', 16, [7 9])
 
 
 %% 3. Differences between LES and RANS
