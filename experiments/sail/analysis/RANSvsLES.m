@@ -10,13 +10,12 @@ load('data/initSetParamsAndFitness.mat');
 initSamples = mirrorParams;
 
 p.featureResolution = [50 50];
-p.nGens = 1000;
+p.nGens = 4000;
 p.display.illu = false;p.display.illuMod = 25;
 
-[resultsRANS.map] = createPredictionMap(resultsRANS.surrogate,'mirror_AcquisitionFunc',p,d,initSamples);
-[resultsLES.map] = createPredictionMap(resultsLES.surrogate,'mirror_AcquisitionFunc',p,d,initSamples);
+[resultsRANS.map, allMapsRANS] = createPredictionMap(resultsRANS.surrogate,'mirror_AcquisitionFunc',p,d,initSamples);
+[resultsLES.map, allMapsLES] = createPredictionMap(resultsLES.surrogate,'mirror_AcquisitionFunc',p,d,initSamples);
 
-save('aeromat','d','p','resultsRANS','resultsLES','initSamples');
 %%
 [genesRANS,fitnessRANS,phenotypesRANS,positioningRANS] = unpackMap(resultsRANS.map,d);
 [genesLES,fitnessLES,phenotypesLES,positioningLES] = unpackMap(resultsLES.map,d);
@@ -33,68 +32,53 @@ end
 
 %% Calculate Similarity
 
-perplexity = 50; theta = 0.1;
+perplexity = 50; theta = 0.3;
 % Genetic similarity
-mappedGenes = tsne(genes,'Algorithm','exact','Perplexity',perplexity);%,'Theta',theta);
+mappedGenes = tsne(genes,'Algorithm','barneshut','Perplexity',perplexity,'Theta',theta, 'Distance', 'cityblock');%,'Distance','correlation','Verbose',2);
 % Phenotypic similarity
-mappedPhenos = tsne(flatPhenos','Algorithm','exact','Perplexity',perplexity);%,'Theta',theta);
+mappedPhenos = tsne(flatPhenos','Algorithm','barneshut','Perplexity',perplexity,'Theta',theta, 'Distance', 'cityblock');%,'Distance','correlation','Verbose',2);
 
-save('aeromat','d','p','resultsRANS','resultsLES','initSamples','mappedGenes','mappedPhenos');
+save('aeromat2','d','p','resultsRANS','resultsLES','initSamples','mappedGenes','mappedPhenos');
 
 %% Show similarity spaces (genetic and phenotypic)
 figure(1);
 hold off;
+psize = 8;
 cmap = parula(3);cmap(1,:) = [];
-h1 = scatter(mappedGenes(1:numel(phenotypesRANS),1),mappedGenes(1:numel(phenotypesRANS),2),32,repmat(cmap(1,:),numel(phenotypesRANS),1),'filled');
+h1 = scatter(mappedGenes(1:numel(phenotypesRANS),1),mappedGenes(1:numel(phenotypesRANS),2),psize,repmat(cmap(1,:),numel(phenotypesRANS),1),'filled');
 hold on;
-h2 = scatter(mappedGenes(numel(phenotypesRANS)+1:end,1),mappedGenes(numel(phenotypesRANS)+1:end,2),32,repmat(cmap(2,:),numel(phenotypesLES),1),'filled');
+h2 = scatter(mappedGenes(numel(phenotypesRANS)+1:end,1),mappedGenes(numel(phenotypesRANS)+1:end,2),psize,repmat(cmap(2,:),numel(phenotypesLES),1),'filled');
 title('Genetic similarity');
 legend([h1 h2],'RANS','LES');
 
 figure(2);
-h1 = scatter(mappedPhenos(1:numel(phenotypesRANS),1),mappedPhenos(1:numel(phenotypesRANS),2),32,repmat(cmap(1,:),numel(phenotypesRANS),1),'filled');
+h1 = scatter(mappedPhenos(1:numel(phenotypesRANS),1),mappedPhenos(1:numel(phenotypesRANS),2),psize,repmat(cmap(1,:),numel(phenotypesRANS),1),'filled');
 hold on;
-h2 = scatter(mappedPhenos(numel(phenotypesRANS)+1:end,1),mappedPhenos(numel(phenotypesRANS)+1:end,2),32,repmat(cmap(2,:),numel(phenotypesLES),1),'filled');
+h2 = scatter(mappedPhenos(numel(phenotypesRANS)+1:end,1),mappedPhenos(numel(phenotypesRANS)+1:end,2),psize,repmat(cmap(2,:),numel(phenotypesLES),1),'filled');
 
 title('Phenotypic similarity');
 legend([h1 h2],'RANS','LES');
 
 
+
 %% ANALYSIS
-%% 1. Does phenotypic clustering give us a better natural clustering? Are shapes more similar?
-% 	- genetic & phenotypic clustering
-% 	- pick LES+RANS cluster from phenotypic clustering
-% 	- Show the members of this cluster in genetic and phenotypic similarity space
-% 	- metric?
-%
-%
 
-numPrototypes = 10;
-[idxG,~,~,~,centroidsG] = kmedoids(mappedGenes,numPrototypes);
-[idxP,~,~,~,centroidsP] = kmedoids(mappedPhenos,numPrototypes);
-%%
+RANSpicked = find(abs(mappedPhenos(:,1)--28.09) < 0.005);
+LESpicked = find(abs(mappedPhenos(:,1)--28.73) < 0.001);
 
-cmap = hsv(numPrototypes+1);cmap(1,:)=[];
-sz = 32;
 figure(1);hold off;
-scatter(mappedGenes(1:numel(phenotypesRANS),1),mappedGenes(1:numel(phenotypesRANS),2),sz,cmap(idxG(1:numel(phenotypesRANS))),'filled','MarkerEdgeColor','k');hold on;
-scatter(mappedGenes(numel(phenotypesRANS)+1:end,1),mappedGenes(numel(phenotypesRANS)+1:end,2),sz,cmap(idxG(numel(phenotypesRANS)+1:end)),'d','filled','MarkerEdgeColor','k');
-ax = gca;ax.XTick = [];ax.YTick = [];ax.ZTick = [];
-title('Genetic Clusters');
-
-
-figure(2);hold off;
-scatter(mappedPhenos(1:numel(phenotypesRANS),1),mappedPhenos(1:numel(phenotypesRANS),2),sz,cmap(idxP(1:numel(phenotypesRANS))),'filled','MarkerEdgeColor','k');hold on;
-scatter(mappedPhenos(numel(phenotypesRANS)+1:end,1),mappedPhenos(numel(phenotypesRANS)+1:end,2),sz,cmap(idxP(numel(phenotypesRANS)+1:end)),'d','filled','MarkerEdgeColor','k');
-ax = gca;ax.XTick = [];ax.YTick = [];ax.ZTick = [];
-title('Phenotypic Clusters');
-
+h = visPhenotypes(phenotypes(RANSpicked),[0 0],cmap(1,:),2);
+hold on;
+h = visPhenotypes(phenotypes(LESpicked),[0.3 0],cmap(2,:),2);
+axis equal;ax = gca;ax.XTick = [];ax.YTick = [];ax.ZTick = [];
+view(120,20);
+    
 %%
 cmap = parula(3);cmap(1,:) = [];
 colorsCFD = [repmat(cmap(1,:),numel(phenotypesRANS),1);repmat(cmap(2,:),numel(phenotypesLES),1)];
 
 % 19 26 27 28
-for i=1:numPrototypes
+for i=3%1:numPrototypes
     figure;
     h = visPhenotypes(phenotypes(idxG==i),positioning(idxG==i,:)/4,colorsCFD(idxG==i,:));
     axis equal;
@@ -102,11 +86,11 @@ for i=1:numPrototypes
     title('Genetic Similarity, mixed class');
     ax = gca;ax.XTick = [];ax.YTick = [];ax.ZTick = [];
     [un,~,ids] = unique(colorsCFD(idxG==i,:),'rows');    
-    h1 = scatter(nan,nan,32,cmap(1,:),'filled');h2 = scatter(nan,nan,32,cmap(2,:),'filled');
+    h1 = scatter(nan,nan,32,cmap(1,:),'filled');
+    h2 = scatter(nan,nan,32,cmap(2,:),'filled');
     legend([h1 h2],'RANS','LES');
     drawnow;
 end
-
 
 
 %% Show cluster-wise phenotypes
@@ -128,17 +112,49 @@ for i=2
     legend([h1 h2],'RANS','LES');
     drawnow;
 end
+
+%% 1. Does phenotypic clustering give us a better natural clustering? Are shapes more similar?
+% 	- genetic & phenotypic clustering
+% 	- pick LES+RANS cluster from phenotypic clustering
+% 	- Show the members of this cluster in genetic and phenotypic similarity space
+% 	- metric?
+%
+%
+
+numPrototypes = 20;
+[idxG,~,~,~,centroidsG] = kmedoids(mappedGenes,numPrototypes);
+[idxP,~,~,~,centroidsP] = kmedoids(mappedPhenos,numPrototypes);
+%%
+
+cmap = hsv(numPrototypes+1);cmap(1,:)=[];
+sz = 32;
+figure(1);hold off;
+scatter(mappedGenes(1:numel(phenotypesRANS),1),mappedGenes(1:numel(phenotypesRANS),2),sz,cmap(idxG(1:numel(phenotypesRANS)),:),'filled','MarkerEdgeColor','k');hold on;
+scatter(mappedGenes(numel(phenotypesRANS)+1:end,1),mappedGenes(numel(phenotypesRANS)+1:end,2),sz,cmap(idxG(numel(phenotypesRANS)+1:end),:),'d','filled','MarkerEdgeColor','k');
+ax = gca;ax.XTick = [];ax.YTick = [];ax.ZTick = [];
+title('Genetic Clusters');
+
+
+figure(2);hold off;
+scatter(mappedPhenos(1:numel(phenotypesRANS),1),mappedPhenos(1:numel(phenotypesRANS),2),sz,cmap(idxP(1:numel(phenotypesRANS)),:),'filled','MarkerEdgeColor','k');hold on;
+scatter(mappedPhenos(numel(phenotypesRANS)+1:end,1),mappedPhenos(numel(phenotypesRANS)+1:end,2),sz,cmap(idxP(numel(phenotypesRANS)+1:end),:),'d','filled','MarkerEdgeColor','k');
+ax = gca;ax.XTick = [];ax.YTick = [];ax.ZTick = [];
+title('Phenotypic Clusters');
+
 %% 2. Representation by Prototypes
 cmap = parula(3);cmap(1,:) = [];
 colorsCFD = [repmat(cmap(1,:),numel(phenotypesRANS),1);repmat(cmap(2,:),numel(phenotypesLES),1)];
+
+clusterIDs = idxP; %idxG idxP
+centroids = centroidsP; %centroidsG centroidsP
 
 clear fig;
 for i=1:numPrototypes
     fig(i) = figure(i);
     subplot(3,3,1);hold off;
-    scatter(mappedPhenos(idxP==i,1),mappedPhenos(idxP==i,2),16,colorsCFD(idxP==i,:),'filled');
+    scatter(mappedPhenos(clusterIDs==i,1),mappedPhenos(clusterIDs==i,2),16,colorsCFD(clusterIDs==i,:),'filled');
     hold on;
-    scatter(mappedPhenos(centroidsP(i),1),mappedPhenos(centroidsP(i),2),32,'r','filled');
+    scatter(mappedPhenos(centroids(i),1),mappedPhenos(centroids(i),2),32,'r','filled');
     axis equal;ax = gca;ax.XTick = [];ax.YTick = [];ax.ZTick = [];
     [un,~,ids] = unique(colorsCFD,'rows');    
     h1 = scatter(nan,nan,32,un(1,:),'filled');h2 = scatter(nan,nan,32,un(2,:),'filled'); h3 = scatter(nan,nan,32,[1 0 0],'filled');
@@ -149,9 +165,9 @@ for i=1:numPrototypes
     
     subplot(3,3,3);hold off;
     skip = 0.1;
-    minGrid = min(mappedPhenos(idxP==i,:));maxGrid = max(mappedPhenos(idxP==i,:));
+    minGrid = min(mappedPhenos(clusterIDs==i,:));maxGrid = max(mappedPhenos(clusterIDs==i,:));
     [xq,yq] = meshgrid(minGrid(1):skip:maxGrid(1), minGrid(2):skip:maxGrid(2));
-    vq = griddata(mappedPhenos(idxP==i,1),mappedPhenos(idxP==i,2),fitness(idxP==i),xq,yq,'natural');
+    vq = griddata(mappedPhenos(clusterIDs==i,1),mappedPhenos(clusterIDs==i,2),fitness(clusterIDs==i),xq,yq,'natural');
     sf = surf(xq,yq,vq);
     sf.EdgeAlpha = 0;
     view(0,90);
@@ -159,28 +175,36 @@ for i=1:numPrototypes
     title('Fitness');
     
     subplot(3,3,[4,5,7,8]);hold off;
-    h = visPhenotypes(phenotypes(centroidsP(i)),positioning(centroidsP(i),:)/4,'k',2);
+    h = visPhenotypes(phenotypes(centroids(i)),[0 0],'k',2);
     axis equal;ax = gca;ax.XTick = [];ax.YTick = [];ax.ZTick = [];
     view(120,20);
+    axis([-0.05 0.2 -0.1 0.3 0.8 1.05]);
     title('Prototype');
     
     subplot(3,3,6);hold off;
-    h = visPhenotypes(phenotypes(centroidsP(i)),positioning(centroidsP(i),:)/4,'k',2);
+    h = visPhenotypes(phenotypes(centroids(i)),[0 0],'k',2);
     axis equal;ax = gca;ax.XTick = [];ax.YTick = [];ax.ZTick = [];
     view(0,90);
-    %title('Prototype XY');
+    axis([-0.05 0.2 -0.1 0.3 0.8 1.05]);
     
     subplot(3,3,9);hold off;
-    h = visPhenotypes(phenotypes(centroidsP(i)),positioning(centroidsP(i),:)/4,'k',2);
+    h = visPhenotypes(phenotypes(centroids(i)),[0 0],'k',2);
     axis equal;ax = gca;ax.XTick = [];ax.YTick = [];ax.ZTick = [];
     view(0,0);
-    %title('Prototype XZ');
+    axis([-0.05 0.2 -0.1 0.3 0.8 1.05]);
     
     drawnow;
 end
 
 save_figures(fig, '.', 'classes', 16, [7 9])
 
+
+
+%% Hierarchical clustering
+
+T = clusterdata(flatPhenos,'Linkage','ward','SaveMemory','on','Maxclust',32);
+tree = linkage(flatPhenos,'ward');
+dendrogram(tree)
 
 %% 3. Differences between LES and RANS
 figure(2);

@@ -1,4 +1,4 @@
-function [predMap, percImproved, percImprovement] = createPredictionMap(gpModel,fitnessFunction,p,d, varargin)
+function [predMap, allMaps] = createPredictionMap(gpModel,fitnessFunction,p,d, varargin)
 %createPredictionMap - Produce prediction map from surrogate model
 %
 % Syntax:  predictionMap = createPredictionMap(gpModels,p,d)
@@ -54,5 +54,5 @@ predMap                                              = createMap(d, p);
 predMap                                              = updateMap(replaced,replacement,predMap,fitness,observation, features);                    
 
 % Illuminate based on surrogate models
-predMap = illuminate(predMap,acqFunction,p,d);
+[predMap,~,~,allMaps] = illuminate(predMap,acqFunction,p,d);
 %------------- END OF CODE --------------

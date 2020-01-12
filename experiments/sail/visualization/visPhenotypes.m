@@ -3,7 +3,7 @@ function h = visPhenotypes(phenotypes,positioning,varargin)
 %   Detailed explanation goes here
 colors = 'k';
 if nargin > 2; colors = varargin{1}; end
-pointSize = 4;
+pointSize = 1;
 if nargin > 3; pointSize = varargin{2}; end
 for i=1:numel(phenotypes)
     vX = phenotypes{i}.vertices(1,1:1:end);
