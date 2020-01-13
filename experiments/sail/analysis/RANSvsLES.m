@@ -32,13 +32,12 @@ end
 
 %% Calculate Similarity
 
-perplexity = 50; theta = 0.3;
-% Genetic similarity
-mappedGenes = tsne(genes,'Algorithm','barneshut','Perplexity',perplexity,'Theta',theta, 'Distance', 'cityblock');%,'Distance','correlation','Verbose',2);
+perplexity = 50; theta = 0.1;
+% Genetic similarity                    %, 'Distance', 'cityblock');%,'Distance','correlation','Verbose',2);
+mappedGenes = tsne(genes,'Algorithm','barneshut','Perplexity',perplexity,'Theta',theta);
 % Phenotypic similarity
-mappedPhenos = tsne(flatPhenos','Algorithm','barneshut','Perplexity',perplexity,'Theta',theta, 'Distance', 'cityblock');%,'Distance','correlation','Verbose',2);
-
-save('aeromat2','d','p','resultsRANS','resultsLES','initSamples','mappedGenes','mappedPhenos');
+mappedPhenos = tsne(flatPhenos','Algorithm','barneshut','Perplexity',perplexity,'Theta',theta);
+save('aeromat','d','p','resultsRANS','resultsLES','initSamples','mappedGenes','mappedPhenos');
 
 %% Show similarity spaces (genetic and phenotypic)
 figure(1);
@@ -63,17 +62,7 @@ legend([h1 h2],'RANS','LES');
 
 %% ANALYSIS
 
-RANSpicked = find(abs(mappedPhenos(:,1)--28.09) < 0.005);
-LESpicked = find(abs(mappedPhenos(:,1)--28.73) < 0.001);
 
-figure(1);hold off;
-h = visPhenotypes(phenotypes(RANSpicked),[0 0],cmap(1,:),2);
-hold on;
-h = visPhenotypes(phenotypes(LESpicked),[0.3 0],cmap(2,:),2);
-axis equal;ax = gca;ax.XTick = [];ax.YTick = [];ax.ZTick = [];
-view(120,20);
-    
-%%
 cmap = parula(3);cmap(1,:) = [];
 colorsCFD = [repmat(cmap(1,:),numel(phenotypesRANS),1);repmat(cmap(2,:),numel(phenotypesLES),1)];
 
@@ -121,9 +110,17 @@ end
 %
 %
 
-numPrototypes = 20;
+numPrototypes = 10;
 [idxG,~,~,~,centroidsG] = kmedoids(mappedGenes,numPrototypes);
 [idxP,~,~,~,centroidsP] = kmedoids(mappedPhenos,numPrototypes);
+
+% Save prototypes to disk
+
+prototypes.phenotypes = {phenotypes{centroidsP}};
+prototypes.genomes = genes(centroidsP,:);
+
+save('aeromat','d','p','resultsRANS','resultsLES','initSamples','mappedGenes','mappedPhenos','prototypes');
+
 %%
 
 cmap = hsv(numPrototypes+1);cmap(1,:)=[];
@@ -197,6 +194,9 @@ for i=1:numPrototypes
 end
 
 save_figures(fig, '.', 'classes', 16, [7 9])
+
+
+
 
 
 
