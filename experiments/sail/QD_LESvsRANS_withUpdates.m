@@ -19,7 +19,7 @@ homeDir = getenv('HOME');
 userName = getenv('USER');
 repositoryLocation = getenv('REPOSITORYLOCATION'); if isempty(repositoryLocation); repositoryLocation = '.'; end
 jobLocation = getenv('JOBLOCATION');
-cfdSolver = getenv('CFDSOLVER'); if isempty(cfdSolver); cfdSolver = 'LES_COMPRESSIBLE'; end % 'RANS_INCOMPRESSIBLE' 'LES_COMPRESSIBLE'
+cfdSolver = getenv('CFDSOLVER'); if isempty(cfdSolver); cfdSolver = 'RANS_INCOMPRESSIBLE'; end % 'RANS_INCOMPRESSIBLE' 'LES_COMPRESSIBLE'
 runOncluster = true;
 
 % ----------------------------------------------------------------------------------
@@ -76,7 +76,7 @@ end
 disp(['Running SAIL based on data file: ' dataFile]);
 disp(['Number of samples: ' int2str(length(fitness))]);
 
-numSamplesPerExperiment = 50;
+numSamplesPerExperiment = 30;
 p.numInitSamples = size(initSamples,1);
 p.infill.nTotalSamples = p.numInitSamples + numSamplesPerExperiment;
 

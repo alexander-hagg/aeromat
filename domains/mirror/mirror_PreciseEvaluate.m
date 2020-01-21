@@ -26,13 +26,17 @@ nObs    = size(nextObservations,1);
 nCases  = d.nCases;
 nRounds = ceil(nObs/d.nCases);
 caseStart = d.caseStart;
+
+disp(nCases)
+
 tic
 value = nan(nObs,1);
 timings = nan(nObs,1);
 for iRound=0:nRounds-1
     PEValue = nan(nCases,1);
     % Evaluate as many samples as you have cases in a batch
-    for iCase = 1:nCases
+    parfor iCase = 1:nCases
+        disp(iCase)
         obsIndx = iRound*nCases+iCase;          
         if obsIndx <= nObs
             openFoamFolder = [folderBaseName 'case' int2str(iCase+caseStart-1) '/']

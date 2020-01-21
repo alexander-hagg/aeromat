@@ -23,7 +23,7 @@ function d = domain(varargin)
 %
 %------------- Input Parsing ------------
 parse = inputParser;
-parse.addOptional('nCases'  , 1);
+parse.addOptional('nCases', 1);
 parse.addOptional('hpc', true);
 parse.addOptional('userName','ahagg2s');
 parse.addOptional('jobLocation','/scratch/ahagg2s/sailCFD/');
