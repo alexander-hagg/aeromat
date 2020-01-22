@@ -4,7 +4,7 @@ do
 		cd "$dir";
 		echo "$dir";
 		reconstructParMesh -constant;
-		# reconstructPar;
+		reconstructPar;
 		cd "..";
 		tar -cvzf "$dir".tar "$dir"
 	fi
