@@ -29,9 +29,6 @@ surrogateAssistance = true;
 load('aeromat.mat');
 d.nCases = nCases; % Reset number of parallel OpenFOAM cases
 fitness = feval(d.preciseEvaluate,prototypes.genomes,d); 
-
-%% Run OpenFoam
-% Save results
 save(['prototypeTest.mat'],'fitness','d','prototypes');
 
 

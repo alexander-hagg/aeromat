@@ -1,0 +1,14 @@
+1. Create SSH tunnel 
+   ssh -R 50000:localhost:50000 ahagg2s@wr0.wr.inf.h-brs.de
+2. goto foam case folder and make sure a <name>.foam file exists in the root folder
+3. Start local paraview session (same build number as on the server!)
+   - source /opt/openfoam6/etc/bashrc
+   Make sure a reverse server connection is defined
+   - Client/Server (reverse connection)
+   - Port 50000
+   - Startup Type "Manual"
+   - Connect
+4. Start paraview server on hpc
+- module load gcc/default 
+- source /usr/local/stella/OpenFOAM-v1906-gcc/OpenFOAM-v1906/etc/bashrc
+./pvserver --server-port=50000 --reverse-connection --client-host=localhost --force-offscreen-rendering --disable-xdisplay-test
