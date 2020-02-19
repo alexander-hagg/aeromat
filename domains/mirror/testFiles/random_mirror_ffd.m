@@ -1,8 +1,25 @@
-d.dof = 36;
+clear;clc;
+nCases = str2num(getenv('NCASES'));if isempty(nCases); nCases=1; end
+disp(['Running SAIL with ' int2str(nCases) ' parallel cases']);
+homeDir = getenv('HOME');
+userName = getenv('USER');
+repositoryLocation = getenv('REPOSITORYLOCATION'); if isempty(repositoryLocation); repositoryLocation = '.'; end
+jobLocation = getenv('JOBLOCATION');
+cfdSolver = getenv('CFDSOLVER'); if isempty(cfdSolver); cfdSolver = 'RANS_INCOMPRESSIBLE'; end % 'RANS_INCOMPRESSIBLE' 'LES_COMPRESSIBLE'
+runOncluster = true;
+
+DOMAIN              = 'mirror'; addpath(genpath(repositoryLocation));rmpath(genpath('domains')); addpath(genpath(['domains/' DOMAIN]));
+d                   = domain('nCases',nCases,'hpc',runOncluster,'userName',userName,'cfdSolver',cfdSolver,'jobLocation',jobLocation);
+p                   = defaultParamSet;
+p.infill            = infillParamSet;
+surrogateAssistance = true;
 
 mutation = 0.5*rand(1,d.dof);
 [FV, ~, ffdP] = mirror_ffd_Express(mutation, 'mirrorBase.stl');
-view(90,0);
+
+figure(1); hold off;
+h = visPhenotype(FV,FV.controlPtsScaled)
+view(70,30);
 axis([-100 100 -200 200 600 800]);    
 
 %% Create mirrors from Sobol set
