@@ -165,6 +165,7 @@ else
     nDimZ               = ffdP.nDimZ;
     bernstein_z         = ffdP.bernstein_z;
     STLMeshpoints       = ffdP.nonTransformedPoints;
+    controlPts          = ffdP.controlPts;
     submesh = ffdP.submesh;
     if doRotation
         rotMat = ffdP.rotMat;
@@ -172,7 +173,7 @@ else
         theta = ffdP.theta;
     end
     normalizationFactors = ffdP.normalizationFactors;
-    maxMeshPoint = ffdP.maxMeshPoint;minMeshPoint = ffdP.minMeshPoint;
+    maxMeshPoint = ffdP.maxMeshPoint; minMeshPoint = ffdP.minMeshPoint;
     shift_mesh_points   = ffdP.shift_mesh_points;
 end
 
@@ -192,6 +193,9 @@ for j = 1:nDimY
             aux_x = aux_x + aux .* allDeforms(:, j, k, i, 1);
             aux_y = aux_y + aux .* allDeforms(:, j, k, i, 2);
             aux_z = aux_z + aux .* allDeforms(:, j, k, i, 3);
+            
+            % Change control points for visualization purposes
+            controlPtsDeform(:,i*k*j) = squeeze(allDeforms(:, j, k, i, :));
         end
     end
 end
@@ -205,6 +209,17 @@ all_smp(:,:,3) = all_smp(:,:,3) + aux_z;
 all_mp = permute(repmat(meshPoints,[1,1,nDeforms]),[3 1 2]);
 newMeshPoints = all_mp + all_smp;
 
+all_ctl = permute(repmat(zeros(size(controlPts,2),3),[1,1,nDeforms]),[3 1 2]);
+all_ctl(:,:,1) = all_ctl(:,:,1) + controlPtsDeform(1,:);
+all_ctl(:,:,2) = all_ctl(:,:,2) + controlPtsDeform(2,:);
+all_ctl(:,:,3) = all_ctl(:,:,3) + controlPtsDeform(3,:);
+
+% Apply shifts and unscale
+all_mp = permute(repmat(controlPts',[1,1,nDeforms]),[3 1 2]);
+newControlPts = all_mp + all_ctl;
+newControlPts = squeeze(newControlPts);
+
+
 
 %% Save as faces and vertices
 for iDeforms = 1:nDeforms
@@ -214,14 +229,19 @@ for iDeforms = 1:nDeforms
     %% Descaling, rotation and denormalization
     % Descaling
     STLMeshpoints(submesh,:) = STLMeshpoints(submesh,:).*repmat((maxMeshPoint-minMeshPoint),sum(submesh),1) + repmat(minMeshPoint,sum(submesh),1);
+    controlPtsScaled = newControlPts.*repmat((maxMeshPoint-minMeshPoint),size(ffdP.controlPts,2),1) + repmat(minMeshPoint,size(ffdP.controlPts,2),1);
     % Rotate back
     if doRotation
         STLMeshpoints = STLMeshpoints * deRotMat;
+        controlPtsScaled = controlPtsScaled * deRotMat;
     end
     % Denormalize mesh points
     newMeshPoints_denorm = repmat(normalizationFactors.xmin,1,size(STLMeshpoints,1)) + (STLMeshpoints'-normalizationFactors.ymin).*repmat(normalizationFactors.xrange,1,size(STLMeshpoints,1))./normalizationFactors.yrange;
+    controlPtsScaled = repmat(normalizationFactors.xmin,1,size(controlPtsScaled,1)) + (controlPtsScaled'-normalizationFactors.ymin).*repmat(normalizationFactors.xrange,1,size(controlPtsScaled,1))./normalizationFactors.yrange;
+    
     
     FV(iDeforms).vertices = newMeshPoints_denorm;
+    FV(iDeforms).controlPtsScaled = controlPtsScaled;
 end
 
 ffdP.allDeforms = allDeforms;

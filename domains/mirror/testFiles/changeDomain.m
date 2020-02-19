@@ -1,4 +1,4 @@
-d = mirror_Domain('hpc', false, 'lowres', false, 'mirrorOnly', true, 'nCases', 4, 'runFolder', '/scratch/ahagg2s/sailCFD');
+d = domain('hpc', false, 'lowres', false, 'mirrorOnly', true, 'nCases', 4, 'runFolder', '/scratch/ahagg2s/sailCFD');
 
 %% Check base mesh
 fname = 'mirrorBase.stl';
