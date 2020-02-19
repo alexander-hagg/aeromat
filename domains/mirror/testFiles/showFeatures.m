@@ -4,8 +4,8 @@ d = mirror_Domain; % for point IDs
 h = figure(1);
 axis tight manual % this ensures that getframe() returns a consistent size
 filename = 'testAnimated.gif';
-for n = 1:0.5:20
-    FV = mirror_ffd_Express(rand(1,51), d.FfdP);
+for n = 1%:0.5:20
+    FV = mirror_ffd_Express(0.5*ones(1,51), d.FfdP);
     V = FV.vertices';F = FV.faces;
     subplot(2,1,1);
     title('Random car mirrors');
@@ -31,6 +31,7 @@ for n = 1:0.5:20
     else
         imwrite(imind,cm,filename,'gif','WriteMode','append');
     end
+    pause(0.3)
 end
 
 
